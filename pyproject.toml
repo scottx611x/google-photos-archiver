@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "google-photos-archiver"
+version = "0.1.0"
+description = ""
+authors = ["Scott Ouellette <scottx611x@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pytest-cov = "^2.10.1"
+flake8 = "^3.8.4"
+black = "^20.8b1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

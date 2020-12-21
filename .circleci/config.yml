@@ -1,0 +1,39 @@
+version: 2.1
+
+orbs:
+  codecov: codecov/codecov@1.1.3
+
+jobs:
+  build_and_test:
+    docker:
+      - image: cimg/python:3.9.1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "poetry.lock" }}
+      - run:
+          name: Install Dependencies
+          command: poetry install
+      - save_cache:
+          key: deps-{{ checksum "poetry.lock" }}
+          paths:
+            - /home/circleci/.cache/pypoetry/virtualenvs
+      - run:
+          name: Run flake8
+          command: |
+            poetry run flake8 .
+      - run:
+          name: Run black
+          command: |
+            poetry run black --check .
+      - run:
+          name: Run Tests
+          command: poetry run python -m pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
+      - codecov/upload:
+          file: coverage.xml
+
+workflows:
+  build_and_test:
+    jobs:
+      - build_and_test
