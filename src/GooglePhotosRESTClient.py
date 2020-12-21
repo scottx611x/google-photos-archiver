@@ -46,7 +46,7 @@ class GooglePhotosApiRestClientError(RuntimeError):
 class GoogleOauthHandler(object):
     def __init__(
         self,
-        client_secret_file_path: Path = Path("../client_secret.json"),
+        client_secret_file_path: Path,
     ):
         self._authorization_url = "https://www.googleapis.com/oauth2/v4/token"
         self._client_secret_file_path = client_secret_file_path
@@ -68,7 +68,7 @@ class GoogleOauthHandler(object):
             open_browser=True,
         )
         self._write_refresh_token(credentials)
-        return credentials
+        return credentials.token
 
     def _get_flow(self) -> InstalledAppFlow:
         flow = InstalledAppFlow.from_client_secrets_file(
@@ -109,8 +109,7 @@ class GooglePhotosApiRestClient(GoogleOauthHandler):
     Refer to: https://developers.google.com/photos/library/guides/get-started
     """
 
-    def __init__(self, api_url: str = "https://photoslibrary.googleapis.com/v1/",
-                 client_secret_file_path: Path = Path("../client_secret.json")):
+    def __init__(self, client_secret_file_path: Path, api_url: str = "https://photoslibrary.googleapis.com/v1/"):
 
         super().__init__(client_secret_file_path)
         self.api_url = api_url
