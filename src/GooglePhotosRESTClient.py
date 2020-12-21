@@ -93,7 +93,7 @@ class GoogleOauthHandler(object):
             "grant_type": "refresh_token",
             "client_id": self._client_config["client_id"],
             "client_secret": self._client_config["client_secret"],
-            "refresh_token": refresh_token
+            "refresh_token": refresh_token,
         }
 
         refresh_token_response = requests.post(self._authorization_url, data=params)
@@ -109,15 +109,19 @@ class GooglePhotosApiRestClient(GoogleOauthHandler):
     Refer to: https://developers.google.com/photos/library/guides/get-started
     """
 
-    def __init__(self, client_secret_file_path: Path, api_url: str = "https://photoslibrary.googleapis.com/v1/"):
-
+    def __init__(
+        self,
+        client_secret_file_path: Path,
+        api_url: str = "https://photoslibrary.googleapis.com/v1/",
+    ):
         super().__init__(client_secret_file_path)
-        self.api_url = api_url
-        self._auth_header: Dict[str, str] = {
-            "Authorization": f"Bearer {self.token}"
-        }
 
-    def get_media_items(self, page_size: int = 25, page_token: Optional[str] = None) -> Response:
+        self.api_url = api_url
+        self._auth_header: Dict[str, str] = {"Authorization": f"Bearer {self.token}"}
+
+    def get_media_items(
+        self, page_size: int = 25, page_token: Optional[str] = None
+    ) -> Response:
         """
         https://developers.google.com/photos/library/reference/rest/v1/mediaItems/list
         """
@@ -128,8 +132,6 @@ class GooglePhotosApiRestClient(GoogleOauthHandler):
             get_media_items_params["pageToken"] = page_token
 
         get_media_items_response: Response = requests.get(
-            media_items_url,
-            headers=self._auth_header,
-            params=get_media_items_params
+            media_items_url, headers=self._auth_header, params=get_media_items_params
         )
         return get_media_items_response
