@@ -1,3 +1,5 @@
 .idea
 client_secret.json
 refresh_token
+__pycache__
+coverage.xml
