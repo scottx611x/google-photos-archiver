@@ -6,7 +6,7 @@ orbs:
 jobs:
   build_and_test:
     docker:
-      - image: cimg/python:3.9.1
+      - image: cimg/python:3.8.0
     steps:
       - checkout
       - restore_cache:
@@ -20,13 +20,14 @@ jobs:
           paths:
             - /home/circleci/.cache/pypoetry/virtualenvs
       - run:
-          name: Run flake8
-          command: |
-            poetry run flake8 .
+          name: Run pylint
+          command: poetry run pylint src/ tests/
       - run:
           name: Run black
-          command: |
-            poetry run black --check .
+          command: poetry run black --check .
+      - run:
+          name: Run isort
+          command: poetry run isort .
       - run:
           name: Run Tests
           command: poetry run python -m pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
