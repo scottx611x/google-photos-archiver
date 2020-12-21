@@ -21,16 +21,13 @@ jobs:
             - /home/circleci/.cache/pypoetry/virtualenvs
       - run:
           name: Run pylint
-          command: |
-            poetry run pylint --rcfile .pylintrc src/ tests/
+          command: poetry run pylint src/ tests/
       - run:
           name: Run black
-          command: |
-            poetry run black --check .
+          command: poetry run black --check .
       - run:
           name: Run isort
-          command: |
-            poetry run isort .
+          command: poetry run isort .
       - run:
           name: Run Tests
           command: poetry run python -m pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml

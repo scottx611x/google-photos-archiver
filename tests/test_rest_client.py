@@ -12,7 +12,7 @@ TEST_TOKEN = "TEST_TOKEN"
 @pytest.fixture()
 def google_photos_api_rest_client(mocker) -> GooglePhotosApiRestClient:
     # We'll test this separately
-    mock_oauth_handler = mocker.patch("src.rest_client.GoogleOauthHandler")
+    mock_oauth_handler = mocker.patch("src.oauth_handler.GoogleOauthHandler")
     mock_oauth_handler.token = TEST_TOKEN
 
     return GooglePhotosApiRestClient(mock_oauth_handler)
