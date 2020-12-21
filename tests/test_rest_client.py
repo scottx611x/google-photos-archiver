@@ -1,11 +1,12 @@
-from pathlib import Path
-
 import pytest
 
-from src.rest_client import GooglePhotosApiRestClient, GooglePhotosApiRestClientError
-from tests.conftest import MockSuccessResponse, MockFailureResponse
+from src.rest_client import (GooglePhotosApiRestClient,
+                             GooglePhotosApiRestClientError)
+from tests.conftest import MockFailureResponse, MockSuccessResponse
 
 TEST_TOKEN = "TEST_TOKEN"
+
+# pylint: disable=redefined-outer-name
 
 
 @pytest.fixture()

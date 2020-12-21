@@ -1,10 +1,8 @@
 from pathlib import Path
+from typing import Callable, Dict, Optional
 from urllib.parse import urljoin
 
 import requests
-
-from typing import Callable, Dict, Optional
-
 from requests import Response
 
 from src.oauth_handler import GoogleOauthHandler
