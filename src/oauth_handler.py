@@ -13,11 +13,7 @@ class GoogleOauthHandler:
     Ref: https://googleapis.github.io/google-api-python-client/docs/oauth-installed.html
     """
 
-    def __init__(
-        self,
-        client_secret_file_path: Path,
-        refresh_token_path: Path
-    ):
+    def __init__(self, client_secret_file_path: Path, refresh_token_path: Path):
         self._authorization_url = "https://www.googleapis.com/oauth2/v4/token"
         self._client_secret_file_path = client_secret_file_path
         self._refresh_token_path = refresh_token_path
@@ -26,7 +22,9 @@ class GoogleOauthHandler:
 
         refresh_token = self.read_refresh_token()
         if refresh_token:
-            self.token = self.refresh_existing_token(refresh_token).json()["access_token"]
+            self.token = self.refresh_existing_token(refresh_token).json()[
+                "access_token"
+            ]
         else:
             self.token = self._get_token()
 
