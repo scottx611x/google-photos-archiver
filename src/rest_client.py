@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Callable, Dict, Optional
 from urllib.parse import urljoin
 
