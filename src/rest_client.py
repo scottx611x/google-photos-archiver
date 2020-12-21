@@ -51,7 +51,7 @@ class GooglePhotosApiRestClient:
 
     def __init__(
         self,
-        oauth_handler: GoogleOauthHandler(Path("../client_secret.json")),
+        oauth_handler: GoogleOauthHandler,
         api_url: str = "https://photoslibrary.googleapis.com/v1/",
     ):
         self.oauth_handler = oauth_handler
