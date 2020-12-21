@@ -1,0 +1,2 @@
+class TestGooglePhotosRestClient:
+    pass
