@@ -1,5 +1,8 @@
+import json
+
 import pytest
 
+from src.media_item import create_media_item
 from src.rest_client import GooglePhotosApiRestClient, GooglePhotosApiRestClientError
 from tests.conftest import MockFailureResponse, MockSuccessResponse
 
@@ -77,3 +80,39 @@ class TestGooglePhotosApiRestClient:
             headers={"Authorization": "Bearer TEST_TOKEN"},
             params={"pageSize": 25},
         )
+
+    def test_get_media_items_paginated(
+        self,
+        google_photos_api_rest_client,
+        mocker,
+        test_photo_media_item,
+        test_video_media_item,
+    ):
+        mocker.patch(
+            "src.rest_client.requests.get",
+            side_effect=[
+                MockSuccessResponse(
+                    bytes(
+                        json.dumps(
+                            {
+                                "mediaItems": [
+                                    test_photo_media_item,
+                                ],
+                                "nextPageToken": "abc123",
+                            }
+                        ),
+                        "utf-8",
+                    )
+                ),
+                MockSuccessResponse(
+                    bytes(json.dumps({"mediaItems": [test_video_media_item]}), "utf-8")
+                ),
+            ],
+        )
+
+        media_items = google_photos_api_rest_client.get_media_items_paginated(limit=2)
+
+        photo_media_item = create_media_item(test_photo_media_item)
+        video_media_item = create_media_item(test_video_media_item)
+
+        assert list(media_items) == [photo_media_item, video_media_item]

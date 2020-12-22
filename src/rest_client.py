@@ -1,10 +1,16 @@
-from typing import Callable, Dict, Optional
+import logging
+import sys
+from typing import Callable, Dict, Generator, Optional
 from urllib.parse import urljoin
 
 import requests
 from requests import Response
 
+from src.media_item import MediaItem, create_media_item
 from src.oauth_handler import GoogleOauthHandler
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 
 def handle_request_errors(decorated_function: Callable):
@@ -66,6 +72,9 @@ class GooglePhotosApiRestClient:
         """
         https://developers.google.com/photos/library/reference/rest/v1/mediaItems/list
         """
+
+        logger.info("Fetching %d MediaItems with page_token: %s", page_size, page_token)
+
         media_items_url: str = urljoin(self.api_url, "mediaItems")
 
         get_media_items_params: Dict[str, str] = {"pageSize": page_size}
@@ -77,3 +86,27 @@ class GooglePhotosApiRestClient:
         )
         get_media_items_response.raise_for_status()
         return get_media_items_response
+
+    def get_media_items_paginated(
+        self, limit: Optional[int] = None
+    ) -> Generator[MediaItem, None, None]:
+        if limit is not None:
+            logger.info("Fetching %d MediaItems", limit)
+        else:
+            logger.info("Fetching all available MediaItems")
+
+        count = 0
+        next_page_token = ""
+
+        while next_page_token is not None:
+            media_items_dict = self.get_media_items(
+                page_size=100,
+                page_token=None if next_page_token == "" else next_page_token,
+            ).json()
+            next_page_token = media_items_dict.get("nextPageToken")
+
+            for media_item in media_items_dict["mediaItems"]:
+                yield create_media_item(media_item)
+                count += 1
+                if count == limit:
+                    return
