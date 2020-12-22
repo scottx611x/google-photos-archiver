@@ -31,9 +31,9 @@ class PhotoMetadata:
 
 @dataclass
 class VideoMetadata:
-    fps: int
     status: VideoProcessingStatus
 
+    fps: Optional[int] = None
     cameraMake: Optional[str] = None
     cameraModel: Optional[str] = None
 

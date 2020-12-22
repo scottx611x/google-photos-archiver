@@ -12,6 +12,8 @@ if __name__ == "__main__":
     )
     media_items: List[MediaItem] = [
         create_media_item(d)
-        for d in google_photos_api_rest_client.get_media_items().json()["mediaItems"]
+        for d in google_photos_api_rest_client.get_media_items(page_size=5).json()[
+            "mediaItems"
+        ]
     ]
     GooglePhotoDownloader(media_items).download()
