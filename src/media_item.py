@@ -103,5 +103,6 @@ def _media_metadata_factory(
 
 
 def create_media_item(media_item_dict: Dict[str, Any]) -> MediaItem:
-    media_metadata = _media_metadata_factory(media_item_dict)
-    return MediaItem(**media_item_dict, mediaMetadata=media_metadata)
+    return MediaItem(
+        **media_item_dict, mediaMetadata=_media_metadata_factory(media_item_dict)
+    )
