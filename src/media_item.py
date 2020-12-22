@@ -1,6 +1,6 @@
 import enum
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 # pylint: disable=invalid-name
 
@@ -19,24 +19,23 @@ class VideoProcessingStatus(enum.Enum):
 
 
 @dataclass
-class CameraMetadata:
-    cameraMake: str
-    cameraModel: str
-
-
-@dataclass
-class PhotoMetadata(CameraMetadata):
+class PhotoMetadata:
     focalLength: float
     apertureFNumber: float
     isoEquivalent: int
 
     exposureTime: Optional[str] = None
+    cameraMake: Optional[str] = None
+    cameraModel: Optional[str] = None
 
 
 @dataclass
-class VideoMetadata(CameraMetadata):
+class VideoMetadata:
     fps: int
     status: VideoProcessingStatus
+
+    cameraMake: Optional[str] = None
+    cameraModel: Optional[str] = None
 
 
 @dataclass
@@ -78,29 +77,31 @@ class MediaItem:
         return self.baseUrl + "=dv"
 
 
-def create_media_item(media_item_dict: Dict[str, Any]) -> MediaItem:
+def _media_metadata_factory(
+    media_item_dict,
+) -> Union[PhotoMediaMetadata, VideoMediaMetadata]:
     media_metadata_dict = media_item_dict["mediaMetadata"]
+    photo_metadata_dict = media_metadata_dict.get("photo")
+    video_metadata_dict = media_metadata_dict.get("video")
 
-    photo_metadata = media_metadata_dict.get("photo", {})
-    video_metadata = media_metadata_dict.get("video", {})
-
-    if photo_metadata:
+    if photo_metadata_dict is not None:
         photo_metadata: Optional[PhotoMetadata] = (
-            PhotoMetadata(**photo_metadata) if photo_metadata else None
+            None if photo_metadata_dict == {} else PhotoMetadata(**photo_metadata_dict)
         )
         del media_metadata_dict["photo"]
-
-        media_metadata: MediaMetadata = PhotoMediaMetadata(
-            **media_metadata_dict, photo=photo_metadata
-        )
+        media_metadata = PhotoMediaMetadata(**media_metadata_dict, photo=photo_metadata)
     else:
         video_metadata: Optional[VideoMetadata] = (
-            VideoMetadata(**video_metadata) if video_metadata else None
+            None if video_metadata_dict == {} else VideoMetadata(**video_metadata_dict)
         )
         del media_metadata_dict["video"]
-        media_metadata: MediaMetadata = VideoMediaMetadata(
-            **media_metadata_dict, video=video_metadata
-        )
+        media_metadata = VideoMediaMetadata(**media_metadata_dict, video=video_metadata)
 
     del media_item_dict["mediaMetadata"]
+
+    return media_metadata
+
+
+def create_media_item(media_item_dict: Dict[str, Any]) -> MediaItem:
+    media_metadata = _media_metadata_factory(media_item_dict)
     return MediaItem(**media_item_dict, mediaMetadata=media_metadata)
