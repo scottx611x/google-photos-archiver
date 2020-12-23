@@ -1,13 +1,9 @@
-import logging
-import sys
 from pathlib import Path
 
 from src.archivers import DiskArchiver
 from src.media_item_archiver import MediaItemArchiver
 from src.oauth_handler import GoogleOauthHandler
 from src.rest_client import GooglePhotosApiRestClient
-
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 if __name__ == "__main__":
     google_photos_api_rest_client = GooglePhotosApiRestClient(
