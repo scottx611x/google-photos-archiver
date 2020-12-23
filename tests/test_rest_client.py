@@ -85,8 +85,8 @@ class TestGooglePhotosApiRestClient:
         self,
         google_photos_api_rest_client,
         mocker,
-        test_photo_media_item,
-        test_video_media_item,
+        test_photo_media_item_dict,
+        test_video_media_item_dict,
     ):
         mocker.patch(
             "src.rest_client.requests.get",
@@ -96,7 +96,7 @@ class TestGooglePhotosApiRestClient:
                         json.dumps(
                             {
                                 "mediaItems": [
-                                    test_photo_media_item,
+                                    test_photo_media_item_dict,
                                 ],
                                 "nextPageToken": "abc123",
                             }
@@ -105,14 +105,17 @@ class TestGooglePhotosApiRestClient:
                     )
                 ),
                 MockSuccessResponse(
-                    bytes(json.dumps({"mediaItems": [test_video_media_item]}), "utf-8")
+                    bytes(
+                        json.dumps({"mediaItems": [test_video_media_item_dict]}),
+                        "utf-8",
+                    )
                 ),
             ],
         )
 
         media_items = google_photos_api_rest_client.get_media_items_paginated(limit=2)
 
-        photo_media_item = create_media_item(test_photo_media_item)
-        video_media_item = create_media_item(test_video_media_item)
+        photo_media_item = create_media_item(test_photo_media_item_dict)
+        video_media_item = create_media_item(test_video_media_item_dict)
 
         assert list(media_items) == [photo_media_item, video_media_item]

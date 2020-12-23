@@ -2,9 +2,10 @@ import enum
 from dataclasses import dataclass
 from typing import Any, Dict, Optional, Union
 
-# pylint: disable=invalid-name
-
 # Ref: https://developers.google.com/photos/library/guides/access-media-items
+import requests
+
+# pylint: disable=invalid-name
 
 
 class VideoProcessingStatus(enum.Enum):
@@ -68,13 +69,27 @@ class MediaItem:
     description: Optional[str] = None
 
     @property
-    def downloadUrl(self):
+    def downloadUrl(self) -> str:
         """
         Ref: https://developers.google.com/photos/library/guides/access-media-items
         """
         if isinstance(self.mediaMetadata, PhotoMediaMetadata):
             return self.baseUrl + "=d"
         return self.baseUrl + "=dv"
+
+    @property
+    def is_ready(self) -> bool:
+        if isinstance(self.mediaMetadata, VideoMediaMetadata):
+            video_processing_status = self.mediaMetadata.video.status
+            return video_processing_status == VideoProcessingStatus.READY.value
+
+        # PhotoMediaMetadata does not have a processing status
+        return True
+
+    def get_raw_data(self) -> bytes:
+        response: requests.Response = requests.get(self.downloadUrl, stream=True)
+        response.raise_for_status()
+        return response.raw.data
 
 
 def _media_metadata_factory(

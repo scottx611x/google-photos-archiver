@@ -1,4 +1,5 @@
 import json
+from unittest.mock import MagicMock
 
 import pytest
 from pytest_socket import disable_socket
@@ -31,7 +32,7 @@ TEST_VIDEO_PROCESSING_STATUS = VideoProcessingStatus.READY.value
 
 
 @pytest.fixture()
-def test_photo_media_item():
+def test_photo_media_item_dict():
     return {
         "id": TEST_ID,
         "productUrl": TEST_URL,
@@ -54,7 +55,7 @@ def test_photo_media_item():
 
 
 @pytest.fixture()
-def test_video_media_item():
+def test_video_media_item_dict():
     return {
         "id": TEST_ID,
         "productUrl": TEST_URL,
@@ -81,6 +82,9 @@ class MockResponse(Response):
         self.encoding = "utf-8"
         self._content = content
         self.status_code = status_code
+
+        self.raw = MagicMock()
+        self.raw.data = self._content
 
 
 class MockSuccessResponse(MockResponse):
