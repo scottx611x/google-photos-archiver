@@ -5,7 +5,9 @@ import pytest
 from pytest_socket import disable_socket
 from requests import Response
 
-from src.media_item import VideoProcessingStatus
+from src.media_item import MediaItem, VideoProcessingStatus, create_media_item
+
+# pylint: disable=redefined-outer-name
 
 
 def pytest_runtest_setup():
@@ -74,6 +76,16 @@ def test_video_media_item_dict():
             },
         },
     }
+
+
+@pytest.fixture()
+def test_photo_media_item(test_photo_media_item_dict) -> MediaItem:
+    return create_media_item(test_photo_media_item_dict)
+
+
+@pytest.fixture()
+def test_video_media_item(test_video_media_item_dict) -> MediaItem:
+    return create_media_item(test_video_media_item_dict)
 
 
 class MockResponse(Response):
