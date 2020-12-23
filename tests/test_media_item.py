@@ -1,5 +1,3 @@
-import pytest
-
 from src.media_item import (
     MediaItem,
     PhotoMediaMetadata,
@@ -28,18 +26,6 @@ from tests.conftest import (
     TEST_WIDTH,
     MockSuccessResponse,
 )
-
-# pylint: disable=redefined-outer-name
-
-
-@pytest.fixture()
-def test_photo_media_item(test_photo_media_item_dict) -> MediaItem:
-    return create_media_item(test_photo_media_item_dict)
-
-
-@pytest.fixture()
-def test_video_media_item(test_video_media_item_dict) -> MediaItem:
-    return create_media_item(test_video_media_item_dict)
 
 
 class TestMediaItem:
