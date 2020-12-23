@@ -90,10 +90,9 @@ class GooglePhotosApiRestClient:
     def get_media_items_paginated(
         self, limit: Optional[int] = None
     ) -> Generator[MediaItem, None, None]:
-        if limit is not None:
-            logger.info("Fetching %d MediaItems", limit)
-        else:
-            logger.info("Fetching all available MediaItems")
+        logger.info(
+            "Fetching %s MediaItems", str(limit) if limit is not None else "all"
+        )
 
         count = 0
         next_page_token = ""
