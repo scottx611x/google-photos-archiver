@@ -1,12 +1,10 @@
 import logging
-import sys
 from typing import Iterable
 
 from src.archivers import Archivable
 from src.media_item import MediaItem
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 
 class MediaItemArchiver:

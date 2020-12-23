@@ -1,5 +1,4 @@
 import logging
-import sys
 from typing import Callable, Dict, Generator, Optional
 from urllib.parse import urljoin
 
@@ -10,7 +9,6 @@ from src.media_item import MediaItem, create_media_item
 from src.oauth_handler import GoogleOauthHandler
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 
 def handle_request_errors(decorated_function: Callable):

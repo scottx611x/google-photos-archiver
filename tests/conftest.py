@@ -1,4 +1,6 @@
 import json
+import logging
+import sys
 from unittest.mock import MagicMock
 
 import pytest
@@ -6,6 +8,8 @@ from pytest_socket import disable_socket
 from requests import Response
 
 from src.media_item import VideoProcessingStatus
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
 def pytest_runtest_setup():
