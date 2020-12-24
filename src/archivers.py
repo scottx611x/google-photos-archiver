@@ -18,7 +18,7 @@ class DiskArchiver(Archivable):
         download_path.mkdir(parents=True, exist_ok=True)
         self.download_path = download_path
 
-    def archive(self, media_item: MediaItem):
+    def archive(self, media_item: MediaItem) -> MediaItem:
         _media_item_path_prefix = Path(
             self.download_path,
             str(media_item.creationTime.year),
@@ -34,7 +34,7 @@ class DiskArchiver(Archivable):
                 "MediaItem at path: %s already exists. Skipping download.",
                 str(media_item_path.absolute()),
             )
-            return
+            return media_item
 
         logger.info(
             "Downloading MediaItem with id: %s to path: %s",
@@ -46,6 +46,8 @@ class DiskArchiver(Archivable):
 
         with media_item_path.open("wb") as f:
             f.write(media_item_raw_data)
+
+        return media_item
 
 
 class AWSGlacierArchiver(Archivable):

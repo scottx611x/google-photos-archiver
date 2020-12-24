@@ -22,10 +22,9 @@ class VideoProcessingStatus(enum.Enum):
 
 @dataclass
 class PhotoMetadata:
-    focalLength: float
-    apertureFNumber: float
-    isoEquivalent: int
-
+    focalLength: Optional[float] = None
+    isoEquivalent: Optional[int] = None
+    apertureFNumber: Optional[float] = None
     exposureTime: Optional[str] = None
     cameraMake: Optional[str] = None
     cameraModel: Optional[str] = None
