@@ -25,5 +25,11 @@ class TestMediaItemArchiver:
         ).start()
 
         for media_item in media_items:
-            with Path(tmp_path, media_item.filename).open("rb") as f:
+            with Path(
+                tmp_path,
+                str(media_item.creationTime.year),
+                str(media_item.creationTime.month),
+                str(media_item.creationTime.day),
+                media_item.filename,
+            ).open("rb") as f:
                 assert f.read() == fake_media_content

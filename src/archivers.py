@@ -19,7 +19,15 @@ class DiskArchiver(Archivable):
         self.download_path = download_path
 
     def archive(self, media_item: MediaItem):
-        media_item_path = Path(self.download_path, media_item.filename)
+        _media_item_path_prefix = Path(
+            self.download_path,
+            str(media_item.creationTime.year),
+            str(media_item.creationTime.month),
+            str(media_item.creationTime.day),
+        )
+        _media_item_path_prefix.mkdir(parents=True, exist_ok=True)
+
+        media_item_path = Path(_media_item_path_prefix, media_item.filename)
 
         if media_item_path.exists():
             logger.info(

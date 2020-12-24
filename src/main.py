@@ -11,6 +11,6 @@ if __name__ == "__main__":
     )
 
     MediaItemArchiver(
-        media_items=google_photos_api_rest_client.get_media_items_paginated(limit=101),
+        media_items=google_photos_api_rest_client.get_media_items_paginated(limit=20),
         archiver=DiskArchiver(download_path=Path("../downloaded_media")),
     ).start()

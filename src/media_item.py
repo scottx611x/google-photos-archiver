@@ -1,5 +1,6 @@
 import enum
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Dict, Optional, Union
 
 # Ref: https://developers.google.com/photos/library/guides/access-media-items
@@ -76,6 +77,10 @@ class MediaItem:
         if isinstance(self.mediaMetadata, PhotoMediaMetadata):
             return self.baseUrl + "=d"
         return self.baseUrl + "=dv"
+
+    @property
+    def creationTime(self) -> datetime:
+        return datetime.strptime(self.mediaMetadata.creationTime, "%Y-%m-%dT%H:%M:%SZ")
 
     @property
     def is_ready(self) -> bool:
