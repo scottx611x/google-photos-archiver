@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
@@ -6,6 +7,7 @@ from pytest_socket import disable_socket
 from requests import Response
 
 from src.media_item import MediaItem, VideoProcessingStatus, create_media_item
+from src.media_item_recorder import MediaItemRecorder
 
 # pylint: disable=redefined-outer-name
 
@@ -86,6 +88,11 @@ def test_photo_media_item(test_photo_media_item_dict) -> MediaItem:
 @pytest.fixture()
 def test_video_media_item(test_video_media_item_dict) -> MediaItem:
     return create_media_item(test_video_media_item_dict)
+
+
+@pytest.fixture()
+def test_media_item_recorder(tmp_path) -> MediaItemRecorder:
+    return MediaItemRecorder(sqlite_db_path=Path(tmp_path, "test.db"))
 
 
 class MockResponse(Response):
