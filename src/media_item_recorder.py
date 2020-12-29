@@ -5,6 +5,10 @@ from src.media_item import MediaItem
 
 
 class MediaItemRecorder:
+    """
+    Persists MediaItem ids to a sqlite db
+    """
+
     def __init__(self, sqlite_db_path: Path):
         self.sqlite_db_path = sqlite_db_path
 
