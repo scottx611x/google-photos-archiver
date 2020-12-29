@@ -34,6 +34,7 @@ class TestMediaItemArchiver:
         ).start()
 
         for media_item in media_items:
+            assert test_media_item_recorder.lookup(media_item) is True
             with Path(
                 tmp_path,
                 str(media_item.creationTime.year),
