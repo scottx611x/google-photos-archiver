@@ -2,11 +2,15 @@ import logging
 from pathlib import Path
 
 from src.media_item import MediaItem
+from src.media_item_recorder import MediaItemRecorder
 
 logger = logging.getLogger(__name__)
 
 
 class Archivable:
+    def __init__(self, recorder: MediaItemRecorder):
+        self.recorder = recorder
+
     def archive(self, media_item: MediaItem):
         raise NotImplementedError(
             f"{self.__class__.__name__} subclasses must implement an archive method"
@@ -14,7 +18,8 @@ class Archivable:
 
 
 class DiskArchiver(Archivable):
-    def __init__(self, download_path: Path):
+    def __init__(self, download_path: Path, recorder: MediaItemRecorder):
+        super().__init__(recorder)
         download_path.mkdir(parents=True, exist_ok=True)
         self.download_path = download_path
 
@@ -29,7 +34,7 @@ class DiskArchiver(Archivable):
 
         media_item_path = Path(_media_item_path_prefix, media_item.filename)
 
-        if media_item_path.exists():
+        if media_item_path.exists() and self.recorder.lookup(media_item):
             logger.info(
                 "MediaItem at path: %s already exists. Skipping download.",
                 str(media_item_path.absolute()),
@@ -46,6 +51,8 @@ class DiskArchiver(Archivable):
 
         with media_item_path.open("wb") as f:
             f.write(media_item_raw_data)
+
+        self.recorder.add(media_item)
 
         return media_item
 
