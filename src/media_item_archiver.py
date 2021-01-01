@@ -30,7 +30,16 @@ class MediaItemArchiver:
                 ]
             )
 
-    def _archive(self, media_item: MediaItem):
+    def _archive(self, media_item: MediaItem) -> bool:
         if media_item.is_ready:
             return self.archiver.archive(media_item)
-        return None
+        return False
+
+
+def get_new_media_item_archivals(
+    completed_media_item_archivals: Iterator[Future],
+) -> int:
+    return sum(
+        int(completed_media_item_archival.result())
+        for completed_media_item_archival in completed_media_item_archivals
+    )

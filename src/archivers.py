@@ -11,7 +11,7 @@ class Archivable:
     def __init__(self, recorder: MediaItemRecorder):
         self.recorder = recorder
 
-    def archive(self, media_item: MediaItem):
+    def archive(self, media_item: MediaItem) -> bool:
         raise NotImplementedError(
             f"{self.__class__.__name__} subclasses must implement an archive method"
         )
@@ -23,7 +23,7 @@ class DiskArchiver(Archivable):
         download_path.mkdir(parents=True, exist_ok=True)
         self.download_path = download_path
 
-    def archive(self, media_item: MediaItem) -> MediaItem:
+    def archive(self, media_item: MediaItem) -> bool:
         _media_item_path_prefix = Path(
             self.download_path,
             str(media_item.creationTime.year),
@@ -39,7 +39,7 @@ class DiskArchiver(Archivable):
                 "MediaItem at path: %s already exists. Skipping download.",
                 str(media_item_path.absolute()),
             )
-            return media_item
+            return False
 
         logger.info(
             "Downloading MediaItem with id: %s to path: %s",
@@ -54,9 +54,9 @@ class DiskArchiver(Archivable):
 
         self.recorder.add(media_item)
 
-        return media_item
+        return True
 
 
 class AWSGlacierArchiver(Archivable):
-    def archive(self, media_item: MediaItem):
+    def archive(self, media_item: MediaItem) -> bool:
         pass

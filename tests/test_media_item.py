@@ -15,7 +15,8 @@ from tests.conftest import (
     TEST_FOCAL_LENGTH,
     TEST_FPS,
     TEST_HEIGHT,
-    TEST_ID,
+    TEST_ID_PHOTO,
+    TEST_ID_VIDEO,
     TEST_ISO_EQUIVALENT,
     TEST_PHOTO_FILENAME,
     TEST_PHOTO_MIMETYPE,
@@ -32,7 +33,7 @@ class TestMediaItem:
     def test_create_photo_media_item(self, test_photo_media_item_dict):
         photo_media_item = create_media_item(test_photo_media_item_dict)
         assert photo_media_item == MediaItem(
-            id=TEST_ID,
+            id=TEST_ID_PHOTO,
             productUrl=TEST_URL,
             baseUrl=TEST_URL,
             mimeType=TEST_PHOTO_MIMETYPE,
@@ -54,7 +55,7 @@ class TestMediaItem:
     def test_create_video_media_item(self, test_video_media_item_dict):
         video_media_item = create_media_item(test_video_media_item_dict)
         assert video_media_item == MediaItem(
-            id=TEST_ID,
+            id=TEST_ID_VIDEO,
             productUrl=TEST_URL,
             baseUrl=TEST_URL,
             mimeType=TEST_VIDEO_MIMETYPE,

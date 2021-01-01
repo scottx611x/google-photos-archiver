@@ -17,6 +17,8 @@ def pytest_runtest_setup():
 
 
 TEST_ID = "abc123"
+TEST_ID_PHOTO = "photo" + TEST_ID
+TEST_ID_VIDEO = "video" + TEST_ID
 TEST_URL = "http://www.example.com"
 TEST_PHOTO_MIMETYPE = "image/jpeg"
 TEST_PHOTO_FILENAME = "test.jpg"
@@ -38,7 +40,7 @@ TEST_VIDEO_PROCESSING_STATUS = VideoProcessingStatus.READY.value
 @pytest.fixture()
 def test_photo_media_item_dict():
     return {
-        "id": TEST_ID,
+        "id": TEST_ID_PHOTO,
         "productUrl": TEST_URL,
         "baseUrl": TEST_URL,
         "mimeType": TEST_PHOTO_MIMETYPE,
@@ -61,7 +63,7 @@ def test_photo_media_item_dict():
 @pytest.fixture()
 def test_video_media_item_dict():
     return {
-        "id": TEST_ID,
+        "id": TEST_ID_VIDEO,
         "productUrl": TEST_URL,
         "baseUrl": TEST_URL,
         "mimeType": TEST_VIDEO_MIMETYPE,
