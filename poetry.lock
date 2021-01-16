@@ -91,7 +91,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 name = "click"
 version = "7.1.2"
 description = "Composable command line interface toolkit"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -499,7 +499,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "416ab272fa5133c9607f49ee202c53b7436837c80d72f70abb6854c818c9d1ea"
+content-hash = "6b0905dc00fd5afc271550cfe46230341fd240c4fc512526c7cae719dd1b397a"
 
 [metadata.files]
 appdirs = [
