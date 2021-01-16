@@ -1,10 +1,11 @@
 import logging
-from typing import Callable, Dict, Generator, Optional
+from typing import Any, Callable, Dict, Generator, List, Optional
 from urllib.parse import urljoin
 
 import requests
 from requests import Response
 
+from src.filters import Filter
 from src.media_item import MediaItem, create_media_item
 from src.oauth_handler import GoogleOauthHandler
 
@@ -64,6 +65,26 @@ class GooglePhotosApiRestClient:
             "Authorization": f"Bearer {self.oauth_handler.token}"
         }
 
+    def _paginate(
+        self, operation: Callable, limit: Optional[int] = None, **kwargs
+    ) -> Generator[MediaItem, None, None]:
+        count = 0
+        next_page_token = ""
+
+        while next_page_token is not None:
+            media_items_dict = operation(
+                page_size=100,
+                page_token=None if next_page_token == "" else next_page_token,
+                **kwargs,
+            ).json()
+            next_page_token = media_items_dict.get("nextPageToken")
+
+            for media_item in media_items_dict.get("mediaItems", []):
+                yield create_media_item(media_item)
+                count += 1
+                if count == limit:
+                    return
+
     def get_media_items(
         self, page_size: int = 25, page_token: Optional[str] = None
     ) -> Response:
@@ -91,19 +112,41 @@ class GooglePhotosApiRestClient:
         logger.info(
             "Fetching %s MediaItems", str(limit) if limit is not None else "all"
         )
+        return self._paginate(self.get_media_items, limit)
 
-        count = 0
-        next_page_token = ""
+    def search_media_items(
+        self,
+        page_size: int = 25,
+        page_token: Optional[str] = None,
+        filters: Optional[List[Filter]] = None,
+    ):
+        """
+        https://developers.google.com/photos/library/reference/rest/v1/mediaItems/search
+        """
+        logger.info("Serching for MediaItems")
 
-        while next_page_token is not None:
-            media_items_dict = self.get_media_items(
-                page_size=100,
-                page_token=None if next_page_token == "" else next_page_token,
-            ).json()
-            next_page_token = media_items_dict.get("nextPageToken")
+        search_media_items_url: str = urljoin(self.api_url, "mediaItems") + ":search"
 
-            for media_item in media_items_dict["mediaItems"]:
-                yield create_media_item(media_item)
-                count += 1
-                if count == limit:
-                    return
+        search_media_items_body: Dict[str, Any] = {"pageSize": page_size}
+        if page_token is not None:
+            search_media_items_body["pageToken"] = page_token
+
+        if filters is not None:
+            search_media_items_body["filters"] = {
+                k: v for f in filters for k, v in f.get_filter().items()
+            }
+
+        search_media_items_response: Response = requests.post(
+            search_media_items_url,
+            headers=self._auth_header,
+            params={"alt": "json"},
+            json=search_media_items_body,
+        )
+        search_media_items_response.raise_for_status()
+        return search_media_items_response
+
+    def search_media_items_paginated(
+        self, limit: Optional[int] = None, filters: Optional[List[Filter]] = None
+    ) -> Generator[MediaItem, None, None]:
+
+        return self._paginate(self.search_media_items, limit, filters=filters)

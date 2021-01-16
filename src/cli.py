@@ -4,6 +4,7 @@ from pathlib import Path
 import click
 
 from src.archivers import DiskArchiver
+from src.filters import Date, DateFilter
 from src.media_item_archiver import MediaItemArchiver, get_new_media_item_archivals
 from src.media_item_recorder import MediaItemRecorder
 from src.oauth_handler import GoogleOauthHandler
@@ -66,7 +67,10 @@ def archive_media_items(
             download_path=Path(download_path),
             recorder=MediaItemRecorder(sqlite_db_path=Path(sqlite_db_path)),
         ),
-        media_items=google_photos_api_rest_client.get_media_items_paginated(limit=200),
+        # media_items=google_photos_api_rest_client.get_media_items_paginated(limit=200),
+        media_items=google_photos_api_rest_client.search_media_items_paginated(
+            limit=200, filters=[DateFilter(dates=[Date(year=2021, month=2)])]
+        ),
         max_threadpool_workers=max_threadpool_workers,
     ).start()
 
