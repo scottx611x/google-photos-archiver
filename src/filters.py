@@ -9,7 +9,7 @@ class Filter:
 
 @dataclass
 class Date:
-    year: int
+    year: int = 0
     month: int = 0
     day: int = 0
 
