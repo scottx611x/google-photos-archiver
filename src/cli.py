@@ -69,7 +69,7 @@ def archive_media_items(
         ),
         # media_items=google_photos_api_rest_client.get_media_items_paginated(limit=200),
         media_items=google_photos_api_rest_client.search_media_items_paginated(
-            limit=200, filters=[DateFilter(dates=[Date(year=2021, month=2)])]
+            limit=200, filters=[DateFilter(dates=[Date(year=2021)])]
         ),
         max_threadpool_workers=max_threadpool_workers,
     ).start()

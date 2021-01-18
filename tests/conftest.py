@@ -6,6 +6,7 @@ import pytest
 from pytest_socket import disable_socket
 from requests import Response
 
+from src.filters import Date, DateFilter, DateRange
 from src.media_item import MediaItem, VideoProcessingStatus, create_media_item
 from src.media_item_recorder import MediaItemRecorder
 
@@ -95,6 +96,21 @@ def test_video_media_item(test_video_media_item_dict) -> MediaItem:
 @pytest.fixture()
 def test_media_item_recorder(tmp_path) -> MediaItemRecorder:
     return MediaItemRecorder(sqlite_db_path=Path(tmp_path, "test.db"))
+
+
+def test_date():
+    return Date(year=2021, month=1, day=18)
+
+
+def test_date_range(test_date: Date = test_date()):
+    end_date = Date(year=test_date.year, month=test_date.month, day=test_date.day + 1)
+    return DateRange(startDate=test_date, endDate=end_date)
+
+
+def test_date_filter(
+    test_date: Date = test_date(), test_date_range: DateRange = test_date_range()
+):
+    return DateFilter(dates=[test_date], date_ranges=[test_date_range])
 
 
 class MockResponse(Response):

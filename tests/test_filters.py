@@ -3,6 +3,7 @@ from dataclasses import asdict
 import pytest
 
 from src.filters import Date, DateFilter, DateRange
+from tests.conftest import test_date, test_date_filter, test_date_range
 
 
 class TestDateFilter:
@@ -43,44 +44,12 @@ class TestDateFilter:
         "dates,date_ranges",
         [
             (
-                [
-                    Date(year=2021, month=1, day=1),
-                    Date(year=2021, month=2, day=2),
-                    Date(year=2021, month=3, day=3),
-                    Date(year=2021, month=4, day=4),
-                    Date(year=2021, month=5, day=5),
-                    Date(year=2021, month=6, day=6),
-                ],
+                [test_date()] * 6,
                 None,
             ),
             (
                 None,
-                [
-                    DateRange(
-                        startDate=Date(year=2021, month=1, day=1),
-                        endDate=Date(year=2021, month=2, day=2),
-                    ),
-                    DateRange(
-                        startDate=Date(year=2021, month=3, day=3),
-                        endDate=Date(year=2021, month=4, day=4),
-                    ),
-                    DateRange(
-                        startDate=Date(year=2021, month=5, day=5),
-                        endDate=Date(year=2021, month=6, day=6),
-                    ),
-                    DateRange(
-                        startDate=Date(year=2021, month=7, day=7),
-                        endDate=Date(year=2021, month=8, day=8),
-                    ),
-                    DateRange(
-                        startDate=Date(year=2021, month=9, day=9),
-                        endDate=Date(year=2021, month=10, day=10),
-                    ),
-                    DateRange(
-                        startDate=Date(year=2021, month=11, day=11),
-                        endDate=Date(year=2021, month=12, day=12),
-                    ),
-                ],
+                [test_date_range()] * 6,
             ),
         ],
     )
@@ -93,31 +62,26 @@ class TestDateFilter:
         [
             (
                 [
-                    Date(year=2021, month=1, day=1),
+                    test_date(),
                 ],
                 None,
                 {
                     "dateFilter": {
-                        "dates": [{"year": 2021, "month": 1, "day": 1}],
+                        "dates": [{"year": 2021, "month": 1, "day": 18}],
                         "ranges": [],
                     }
                 },
             ),
             (
                 None,
-                [
-                    DateRange(
-                        startDate=Date(year=2021, month=1, day=1),
-                        endDate=Date(year=2021, month=2, day=2),
-                    )
-                ],
+                [test_date_range()],
                 {
                     "dateFilter": {
                         "dates": [],
                         "ranges": [
                             {
-                                "startDate": {"year": 2021, "month": 1, "day": 1},
-                                "endDate": {"year": 2021, "month": 2, "day": 2},
+                                "startDate": {"year": 2021, "month": 1, "day": 18},
+                                "endDate": {"year": 2021, "month": 1, "day": 19},
                             }
                         ],
                     }
@@ -125,25 +89,10 @@ class TestDateFilter:
             ),
             (
                 [
-                    Date(year=2021, month=1, day=1),
+                    test_date(),
                 ],
-                [
-                    DateRange(
-                        startDate=Date(year=2021, month=1, day=1),
-                        endDate=Date(year=2021, month=2, day=2),
-                    )
-                ],
-                {
-                    "dateFilter": {
-                        "dates": [{"year": 2021, "month": 1, "day": 1}],
-                        "ranges": [
-                            {
-                                "startDate": {"year": 2021, "month": 1, "day": 1},
-                                "endDate": {"year": 2021, "month": 2, "day": 2},
-                            }
-                        ],
-                    }
-                },
+                [test_date_range()],
+                test_date_filter().get_filter(),
             ),
         ],
     )

@@ -2,10 +2,9 @@ import json
 
 import pytest
 
-from src.filters import Date, DateFilter, DateRange
 from src.media_item import create_media_item
 from src.rest_client import GooglePhotosApiRestClient, GooglePhotosApiRestClientError
-from tests.conftest import MockFailureResponse, MockSuccessResponse
+from tests.conftest import MockFailureResponse, MockSuccessResponse, test_date_filter
 
 TEST_TOKEN = "TEST_TOKEN"
 
@@ -146,35 +145,8 @@ class TestGooglePhotosApiRestClient:
                 dict(pageSize=123, pageToken="abc"),
             ),
             (
-                dict(
-                    filters=[
-                        DateFilter(
-                            dates=[
-                                Date(year=2021, month=1, day=1),
-                            ],
-                            date_ranges=[
-                                DateRange(
-                                    startDate=Date(year=2021, month=1, day=1),
-                                    endDate=Date(year=2021, month=2, day=2),
-                                )
-                            ],
-                        )
-                    ]
-                ),
-                {
-                    "pageSize": 25,
-                    "filters": {
-                        "dateFilter": {
-                            "dates": [{"year": 2021, "month": 1, "day": 1}],
-                            "ranges": [
-                                {
-                                    "startDate": {"year": 2021, "month": 1, "day": 1},
-                                    "endDate": {"year": 2021, "month": 2, "day": 2},
-                                }
-                            ],
-                        }
-                    },
-                },
+                dict(filters=[test_date_filter()]),
+                {"pageSize": 25, "filters": test_date_filter().get_filter()},
             ),
         ],
     )
