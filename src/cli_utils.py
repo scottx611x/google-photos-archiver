@@ -23,7 +23,6 @@ class Timer:
 
     def __exit__(self, *args):
         self.time = time.perf_counter() - self.time
-        print("yo")
 
 
 def validate_dates(_, param, value):
