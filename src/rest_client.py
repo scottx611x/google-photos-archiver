@@ -21,8 +21,18 @@ def handle_request_errors(decorated_function: Callable):
         try:
             return decorated_function(self, *args, **kwargs)
         except requests.RequestException as err:
+            error_message = None
+
+            error_response_json = err.response.json()
+            error_content = error_response_json.get("error")
+
+            if error_content is not None:
+                error_message = error_content.get("message")
+
             raise GooglePhotosApiRestClientError(
-                f"Failed to execute: `{decorated_function.__name__}` {err}"
+                f"Failed to execute: `{decorated_function.__name__}` {err}" + ""
+                if error_message is None
+                else " \n" + error_message
             ) from err
 
     return wrapper
