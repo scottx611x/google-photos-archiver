@@ -13,12 +13,20 @@ class Date:
     month: int = 0
     day: int = 0
 
+    def __eq__(self, other: "Date"):
+        return all(
+            [self.year == other.year, self.month == other.month, self.day == other.day]
+        )
+
 
 @dataclass
 # pylint: disable=invalid-name
 class DateRange:
     startDate: Date
     endDate: Date
+
+    def __eq__(self, other: "DateRange"):
+        return all([self.startDate == other.startDate, self.endDate == other.endDate])
 
 
 class DateFilter(Filter):
@@ -37,6 +45,9 @@ class DateFilter(Filter):
 
         self.dates = dates
         self.date_ranges = date_ranges
+
+    def __eq__(self, other: "DateFilter"):
+        return all([self.dates == other.dates, self.date_ranges == other.date_ranges])
 
     def get_filter(self) -> Dict:
         return {

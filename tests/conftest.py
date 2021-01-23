@@ -9,6 +9,7 @@ from requests import Response
 from src.filters import Date, DateFilter, DateRange
 from src.media_item import MediaItem, VideoProcessingStatus, create_media_item
 from src.media_item_recorder import MediaItemRecorder
+from src.rest_client import GooglePhotosApiRestClient
 
 # pylint: disable=redefined-outer-name
 
@@ -36,6 +37,8 @@ TEST_ISO_EQUIVALENT = 123
 
 TEST_FPS = 30
 TEST_VIDEO_PROCESSING_STATUS = VideoProcessingStatus.READY.value
+
+TEST_TOKEN = "TEST_TOKEN"
 
 
 @pytest.fixture()
@@ -96,6 +99,14 @@ def test_video_media_item(test_video_media_item_dict) -> MediaItem:
 @pytest.fixture()
 def test_media_item_recorder(tmp_path) -> MediaItemRecorder:
     return MediaItemRecorder(sqlite_db_path=Path(tmp_path, "test.db"))
+
+
+@pytest.fixture()
+def google_photos_api_rest_client(mocker) -> GooglePhotosApiRestClient:
+    mock_oauth_handler = mocker.patch("src.oauth_handler.GoogleOauthHandler")
+    mock_oauth_handler.token = TEST_TOKEN
+
+    return GooglePhotosApiRestClient(mock_oauth_handler)
 
 
 def test_date():
