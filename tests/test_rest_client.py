@@ -144,7 +144,7 @@ class TestGooglePhotosApiRestClient:
             "src.rest_client.requests.post",
             return_value=MockSuccessResponse(),
         )
-        if json is None:
+        if _json is None:
             search_media_items_response = (
                 google_photos_api_rest_client.search_media_items()
             )
