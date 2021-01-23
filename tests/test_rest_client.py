@@ -3,21 +3,8 @@ import json
 import pytest
 
 from src.media_item import create_media_item
-from src.rest_client import GooglePhotosApiRestClient, GooglePhotosApiRestClientError
+from src.rest_client import GooglePhotosApiRestClientError
 from tests.conftest import MockFailureResponse, MockSuccessResponse, test_date_filter
-
-TEST_TOKEN = "TEST_TOKEN"
-
-# pylint: disable=redefined-outer-name
-
-
-@pytest.fixture()
-def google_photos_api_rest_client(mocker) -> GooglePhotosApiRestClient:
-    # We'll test this separately
-    mock_oauth_handler = mocker.patch("src.oauth_handler.GoogleOauthHandler")
-    mock_oauth_handler.token = TEST_TOKEN
-
-    return GooglePhotosApiRestClient(mock_oauth_handler)
 
 
 class TestGooglePhotosApiRestClient:
@@ -135,7 +122,7 @@ class TestGooglePhotosApiRestClient:
         )
 
     @pytest.mark.parametrize(
-        "json,expected_json",
+        "_json,expected_json",
         [
             (None, dict(pageSize=25)),
             (dict(page_size=123), dict(pageSize=123)),
@@ -151,7 +138,7 @@ class TestGooglePhotosApiRestClient:
         ],
     )
     def test_search_media_items_params(
-        self, mocker, google_photos_api_rest_client, json, expected_json
+        self, mocker, google_photos_api_rest_client, _json, expected_json
     ):
         mock_get = mocker.patch(
             "src.rest_client.requests.post",
@@ -163,7 +150,7 @@ class TestGooglePhotosApiRestClient:
             )
         else:
             search_media_items_response = (
-                google_photos_api_rest_client.search_media_items(**json)
+                google_photos_api_rest_client.search_media_items(**_json)
             )
         assert search_media_items_response.ok
         mock_get.assert_called_with(
