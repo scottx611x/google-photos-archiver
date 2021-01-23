@@ -57,14 +57,14 @@ def cli(ctx: click.Context, client_secret_json_path: str, refresh_token_path: st
     "--max-threadpool-workers",
     type=int,
     default=100,
-    help="The maximiumum amount of workers to utilize for the ThreadPoolExecutor",
+    help="The maximum amount of workers to utilize for the ThreadPoolExecutor",
     show_default=True,
 )
 @click.option(
     "--max-media-items",
     type=int,
     default=200,
-    help="The maximiumum amount of MediaItems to account for and archive in a given execution",
+    help="The maximum amount of MediaItems to account for and archive in a given execution",
     show_default=True,
 )
 @click.option(
