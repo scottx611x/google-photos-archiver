@@ -139,7 +139,7 @@ def get_media_item_archiver(
     max_threadpool_workers: int,
     media_items: Generator[MediaItem, None, None],
     sqlite_db_path: str,
-):
+) -> MediaItemArchiver:
     return MediaItemArchiver(
         archiver=DiskArchiver(
             download_path=Path(download_path),
