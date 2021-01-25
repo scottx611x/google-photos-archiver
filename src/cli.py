@@ -101,9 +101,17 @@ def archive_media_items(
             date_filter, date_range_filter
         )
 
-        click.secho(
+        _start_message_innards = (
+            f" from dates={dates} and date_ranges={date_ranges}"
+            if dates is not None or date_ranges is not None
+            else ""
+        )
+        start_message = (
             f"Beginning archival of up to {max_media_items} MediaItem(s)"
-            f"{'' if not dates or date_ranges else f' from dates={dates} and date_ranges={date_ranges}'}",
+            f"{_start_message_innards}"
+        )
+        click.secho(
+            start_message,
             fg="green",
         )
 
