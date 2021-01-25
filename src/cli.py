@@ -103,7 +103,7 @@ def archive_media_items(
 
         click.secho(
             f"Beginning archival of up to {max_media_items} MediaItem(s)"
-            f"{'' if not dates and date_ranges else f' from dates={dates} and date_ranges={date_ranges}'}",
+            f"{'' if not dates or date_ranges else f' from dates={dates} and date_ranges={date_ranges}'}",
             fg="green",
         )
 
