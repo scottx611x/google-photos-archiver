@@ -72,6 +72,7 @@ A browser window will be opened during the initial OAuth flow. After successfull
 
 #### Usage
 ```
+$ git clone git@github.com:scottx611x/google-photos-archiver.git
 $ poetry install
 $ poetry run google-photos-archiver --help
 ```
