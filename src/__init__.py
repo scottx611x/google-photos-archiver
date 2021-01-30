@@ -1,6 +1,7 @@
 import logging
+import os
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-__version__ = "0.1.0"
+__version__ = os.getenv("CIRCLE_TAG", "0.0.0")
