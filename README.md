@@ -30,6 +30,24 @@ But in all seriousness, I've mainly just needed a distraction from the vicious c
 
 ### Getting Started
 
+#### Google Oauth Setup
+
+These instructions will help you set up Google OAuth2 client credentials so you can start using `google-photos-archiver`
+
+- While logged into your Google account navigate to [Create a New Project](https://console.developers.google.com/projectcreate)
+- Create one, and switch to using it with the UI dropdown
+- Navigate to `APIs & Services` click on `+ Enable APIs and services`, and enable the `Photos Library API`
+- Navigate back to `APIs & Services` and click on `Credentials`
+- Click on `+ Create Credentials > OAuth client ID`
+- Configure an OAuth consent screen. You can just fill out the required fields and hit Save.
+  - Click `Add Or Remove Scopes` and manually add scope: `https://www.googleapis.com/auth/photoslibrary.readonly`
+  - Accept remaining defaults, save through and return to `Credentials`
+- Click on `+ Create Credentials > OAuth client ID`
+- Make a `"Desktop App"`
+- Congrats!, you now have a Client ID and Client Secret
+- Download the associated `client_secret.json` file and make note of its location as we'll be providing it's path to `google-photos-archiver`
+
+
 ```
 $ poetry install
 $ poetry run google-photos-archiver
