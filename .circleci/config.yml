@@ -34,15 +34,18 @@ jobs:
                   command: poetry run pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
             - codecov/upload:
                   file: coverage.xml
-            - setup_remote_docker:
-                  version: 19.03.13
+    docker_build:
+        machine: true
+        steps:
+            - checkout
             - run:
                   name: Docker Build and Run
                   command: |
-                      docker build . -t google-photos-archiver
-                      docker run google-photos-archiver
+                      docker build . -t google-photos-archiver:$CIRCLE_BRANCH
+                      docker run google-photos-archiver:$CIRCLE_BRANCH
 
 workflows:
     build_and_test:
         jobs:
             - build_and_test
+            - docker_build
