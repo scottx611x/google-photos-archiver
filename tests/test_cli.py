@@ -51,6 +51,7 @@ def test_archive_media_items(
             f"Beginning archival of up to {max_media_items} MediaItem(s)"
             in result.output
         )
+        assert "from dates" not in result.output
 
     get_media_item_archiver_mock.assert_called()
     get_new_media_item_archivals_mock.assert_called()

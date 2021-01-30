@@ -103,7 +103,7 @@ def archive_media_items(
 
         _start_message_innards = (
             f" from dates={dates} and date_ranges={date_ranges}"
-            if dates is not None or date_ranges is not None
+            if dates != [] or date_ranges != []
             else ""
         )
         start_message = (
