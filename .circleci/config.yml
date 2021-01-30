@@ -34,6 +34,9 @@ jobs:
                   command: poetry run pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
             - codecov/upload:
                   file: coverage.xml
+            - setup_remote_docker:
+                  version: 19.03.13
+                  docker_layer_caching: true
             - run:
                   name: Docker Build and Run
                   command: |
