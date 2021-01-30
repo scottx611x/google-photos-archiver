@@ -31,11 +31,21 @@ jobs:
                   command: poetry run isort .
             - run:
                   name: Run Tests
-                  command: poetry run python -m pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
+                  command: poetry run pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
             - codecov/upload:
                   file: coverage.xml
+    docker_build:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                  name: Docker Build and Run
+                  command: |
+                      docker build . -t google-photos-archiver:$CIRCLE_BRANCH
+                      docker run google-photos-archiver:$CIRCLE_BRANCH
 
 workflows:
     build_and_test:
         jobs:
             - build_and_test
+            - docker_build
