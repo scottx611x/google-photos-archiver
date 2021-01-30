@@ -31,9 +31,14 @@ jobs:
                   command: poetry run isort .
             - run:
                   name: Run Tests
-                  command: poetry run python -m pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
+                  command: poetry run pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
             - codecov/upload:
                   file: coverage.xml
+            - run:
+                  name: Docker Build and Run
+                  command: |
+                      docker build . -t google-photos-archiver
+                      docker run google-photos-archiver
 
 workflows:
     build_and_test:
