@@ -34,6 +34,7 @@ jobs:
                   command: poetry run pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
             - codecov/upload:
                   file: coverage.xml
+
     docker_build:
         machine: true
         steps:
@@ -44,8 +45,54 @@ jobs:
                       docker build . -t google-photos-archiver:$CIRCLE_BRANCH
                       docker run google-photos-archiver:$CIRCLE_BRANCH
 
+    gh_release:
+        docker:
+            - image: cimg/python:3.8.0
+        steps:
+            - checkout
+            - run: pip install python-semantic-release
+            - run: semantic-release publish
+
+    pypi_publish:
+        docker:
+            - image: cimg/python:3.8.0
+        steps:
+            - checkout
+            - run:
+                  name: Push to PyPI
+                  command: |
+                      poetry publish --build --username "${PYPI_USERNAME}" --password "${PYPI_PASSWORD}" --no-interaction
+
 workflows:
     build_and_test:
         jobs:
             - build_and_test
             - docker_build
+            - gh_release:
+                  filters:
+                      branches:
+                          only: main
+
+    publish:
+        jobs:
+            - build_and_test:
+                  filters:
+                      tags:
+                          only: /v[0-9]+(\.[0-9]+)*/
+                      branches:
+                          ignore: /.*/
+            - docker_build:
+                  filters:
+                      tags:
+                          only: /v[0-9]+(\.[0-9]+)*/
+                      branches:
+                          ignore: /.*/
+            - pypi_publish:
+                  requires:
+                      - build_and_test
+                      - docker_build
+                  filters:
+                      tags:
+                          only: /v[0-9]+(\.[0-9]+)*/
+                      branches:
+                          ignore: /.*/
