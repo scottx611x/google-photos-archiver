@@ -23,6 +23,14 @@ pylint = "^2.6.0"
 [tool.poetry.scripts]
 google-photos-archiver = 'src.google_photos_archiver:cli'
 
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
+[tool.semantic_release]
+version_variable = "src/__init__.py:__version__"
+
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
 build-backend = "poetry.core.masonry.api"
