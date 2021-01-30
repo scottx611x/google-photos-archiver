@@ -1,14 +1,15 @@
 [tool.poetry]
 name = "google-photos-archiver"
-version = "0.1.0"
-description = ""
+version = "0.0.0"
+description = "Archives the contents of your Google Photos library to disk"
 authors = ["Scott Ouellette <scottx611x@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8.0"
-requests = "^2.25.1"
+requests = "2.25.1"
+click = "7.1.2"
 google-auth-oauthlib = "^0.4.2"
-click = "^7.1.2"
+poetry-dynamic-versioning = "^0.12.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
