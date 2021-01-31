@@ -54,7 +54,9 @@ jobs:
             - run: git config --global user.email "scottx611x@gmail.com"
             - run: git config --global user.name "Scott Ouellette"
             - run: semantic-release version
-            - run: git push origin --tags
+            - run: semantic-release changelog > CHANGELOG.md
+            - run: git add CHANGELOG.md && git commit -m "[skip ci] Update CHANGELOG.md"
+            - run: git push && git push origin --tags
 
     pypi_publish:
         docker:
