@@ -29,6 +29,7 @@ vcs = "git"
 style = "semver"
 
 [tool.semantic_release]
+version_variable = "pyproject.toml:tool.poetry.version"
 version_toml = "pyproject.toml:tool.poetry.version"
 branch = "main"
 version_source = "tag"
