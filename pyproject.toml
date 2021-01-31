@@ -9,7 +9,6 @@ python = "^3.8.0"
 requests = "2.25.1"
 click = "7.1.2"
 google-auth-oauthlib = "^0.4.2"
-poetry-dynamic-versioning = "^0.12.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -30,7 +29,8 @@ vcs = "git"
 style = "semver"
 
 [tool.semantic_release]
-version_variable = "src/__init__.py:__version__"
+version_source = "tag"
+upload_to_pypi = false
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]

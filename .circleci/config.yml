@@ -61,6 +61,7 @@ jobs:
             - run:
                   name: Push to PyPI
                   command: |
+                      pip install poetry-dynamic-versioning
                       poetry publish --build --username "${PYPI_USERNAME}" --password "${PYPI_PASSWORD}" --no-interaction
 
 workflows:
