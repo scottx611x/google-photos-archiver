@@ -73,6 +73,9 @@ workflows:
                   filters:
                       branches:
                           only: main
+                  requires:
+                      - build_and_test
+                      - docker_build
 
     publish:
         jobs:
