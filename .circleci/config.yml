@@ -22,7 +22,7 @@ jobs:
                       - /home/circleci/.cache/pypoetry/virtualenvs
             - run:
                   name: Run pylint
-                  command: poetry run pylint src/ tests/
+                  command: poetry run pylint google_photos_archiver/ tests/
             - run:
                   name: Run black
                   command: poetry run black --check .
@@ -31,7 +31,7 @@ jobs:
                   command: poetry run isort .
             - run:
                   name: Run Tests
-                  command: poetry run pytest -vv --cov=src --cov-fail-under=70 --cov-report=term --cov-report=xml
+                  command: poetry run pytest -vv --cov=google_photos_archiver --cov-fail-under=70 --cov-report=term --cov-report=xml
             - codecov/upload:
                   file: coverage.xml
 
