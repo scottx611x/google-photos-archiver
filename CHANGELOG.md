@@ -2,6 +2,12 @@ Changelog
 =========
 
 
+(unreleased)
+------------
+- Update README. [Scott Ouellette]
+- [skip ci] Update CHANGELOG.md. [Scott Ouellette]
+
+
 v0.1.7 (2021-01-31)
 -------------------
 - Fix(changelog): Get gitchangelog working. [Scott Ouellette]
