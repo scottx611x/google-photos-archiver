@@ -50,7 +50,7 @@ jobs:
             - image: cimg/python:3.8.0
         steps:
             - checkout
-            - run: pip install python-semantic-release, gitchangelog
+            - run: pip install python-semantic-release gitchangelog
             - run:
                   name: Configure Git
                   command: |
