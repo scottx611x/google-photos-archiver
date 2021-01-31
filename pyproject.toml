@@ -29,6 +29,7 @@ vcs = "git"
 style = "semver"
 
 [tool.semantic_release]
+branch = "main"
 version_source = "tag"
 upload_to_pypi = false
 
