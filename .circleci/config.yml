@@ -50,12 +50,20 @@ jobs:
             - image: cimg/python:3.8.0
         steps:
             - checkout
-            - run: pip install python-semantic-release
-            - run: git config --global user.email "scottx611x@gmail.com"
-            - run: git config --global user.name "Scott Ouellette"
+            - run: pip install python-semantic-release, gitchangelog
+            - run:
+                  name: Configure Git
+                  command: |
+                      git config --global user.email "scottx611x@gmail.com"
+                      git config --global user.name "Scott Ouellette"
             - run: semantic-release version
-            - run: semantic-release changelog --post
-            - run: git push origin --tags
+            - run:
+                  name: Update Changelog
+                  command: |
+                      gitchangelog > CHANGELOG.md
+                      git add CHANGELOG.md
+                      git commit -m "[skip ci] Update CHANGELOG.md"
+            - run: git push && git push origin --tags
 
     pypi_publish:
         docker:
@@ -66,7 +74,6 @@ jobs:
                   name: Push to PyPI
                   command: |
                       pip install poetry-dynamic-versioning
-                      rm -rf tests
                       poetry publish --build --username "${PYPI_USERNAME}" --password "${PYPI_PASSWORD}" --no-interaction --verbose
 
 workflows:

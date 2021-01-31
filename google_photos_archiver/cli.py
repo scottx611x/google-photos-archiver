@@ -2,16 +2,16 @@ from pathlib import Path
 
 import click
 
-from src.cli_utils import (
+from google_photos_archiver.cli_utils import (
     Timer,
     get_date_objects_from_filters,
     get_media_item_archiver,
     get_media_items,
     validate_dates,
 )
-from src.media_item_archiver import get_new_media_item_archivals
-from src.oauth_handler import GoogleOauthHandler
-from src.rest_client import GooglePhotosApiRestClient
+from google_photos_archiver.media_item_archiver import get_new_media_item_archivals
+from google_photos_archiver.oauth_handler import GoogleOauthHandler
+from google_photos_archiver.rest_client import GooglePhotosApiRestClient
 
 
 @click.group()

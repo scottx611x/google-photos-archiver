@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from src.oauth_handler import GoogleOauthHandler
+from google_photos_archiver.oauth_handler import GoogleOauthHandler
 from tests.conftest import MockSuccessResponse
 
 TEST_CLIENT_ID = "TEST_CLIENT_ID"
@@ -20,7 +20,9 @@ class MockCredentials:
 
 @pytest.fixture(autouse=True)
 def mock_installed_app_flow(mocker):
-    _mock_installed_app_flow = mocker.patch("src.oauth_handler.InstalledAppFlow")
+    _mock_installed_app_flow = mocker.patch(
+        "google_photos_archiver.oauth_handler.InstalledAppFlow"
+    )
     _mock_installed_app_flow.from_client_secrets_file().client_config = {
         "client_id": TEST_CLIENT_ID,
         "client_secret": TEST_CLIENT_SECRET,
@@ -51,7 +53,7 @@ class TestGoogleOauthHandler:
             f.write(TEST_REFRESH_TOKEN)
 
         mock_post = mocker.patch(
-            "src.oauth_handler.requests.post",
+            "google_photos_archiver.oauth_handler.requests.post",
             return_value=MockSuccessResponse(
                 bytes(json.dumps({"access_token": new_access_token}), "utf-8")
             ),

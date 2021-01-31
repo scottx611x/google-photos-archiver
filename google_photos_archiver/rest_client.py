@@ -5,9 +5,9 @@ from urllib.parse import urljoin
 import requests
 from requests import Response
 
-from src.filters import Filter
-from src.media_item import MediaItem, create_media_item
-from src.oauth_handler import GoogleOauthHandler
+from google_photos_archiver.filters import Filter
+from google_photos_archiver.media_item import MediaItem, create_media_item
+from google_photos_archiver.oauth_handler import GoogleOauthHandler
 
 logger = logging.getLogger(__name__)
 

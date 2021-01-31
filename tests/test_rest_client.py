@@ -2,15 +2,15 @@ import json
 
 import pytest
 
-from src.media_item import create_media_item
-from src.rest_client import GooglePhotosApiRestClientError
+from google_photos_archiver.media_item import create_media_item
+from google_photos_archiver.rest_client import GooglePhotosApiRestClientError
 from tests.conftest import MockFailureResponse, MockSuccessResponse, test_date_filter
 
 
 class TestGooglePhotosApiRestClient:
     def test_get_media_items_success(self, google_photos_api_rest_client, mocker):
         mock_get = mocker.patch(
-            "src.rest_client.requests.get",
+            "google_photos_archiver.rest_client.requests.get",
             return_value=MockSuccessResponse(),
         )
         get_media_items_response = google_photos_api_rest_client.get_media_items()
@@ -37,7 +37,7 @@ class TestGooglePhotosApiRestClient:
         self, mocker, google_photos_api_rest_client, params, expected_params
     ):
         mock_get = mocker.patch(
-            "src.rest_client.requests.get",
+            "google_photos_archiver.rest_client.requests.get",
             return_value=MockSuccessResponse(),
         )
         if params is None:
@@ -55,7 +55,7 @@ class TestGooglePhotosApiRestClient:
 
     def test_get_media_items_failure(self, google_photos_api_rest_client, mocker):
         mock_get = mocker.patch(
-            "src.rest_client.requests.get",
+            "google_photos_archiver.rest_client.requests.get",
             return_value=MockFailureResponse(),
         )
         with pytest.raises(
@@ -76,7 +76,7 @@ class TestGooglePhotosApiRestClient:
         test_video_media_item_dict,
     ):
         mocker.patch(
-            "src.rest_client.requests.get",
+            "google_photos_archiver.rest_client.requests.get",
             side_effect=[
                 MockSuccessResponse(
                     bytes(
@@ -109,7 +109,7 @@ class TestGooglePhotosApiRestClient:
 
     def test_search_media_items_success(self, google_photos_api_rest_client, mocker):
         mock_post = mocker.patch(
-            "src.rest_client.requests.post",
+            "google_photos_archiver.rest_client.requests.post",
             return_value=MockSuccessResponse(),
         )
         search_media_items_response = google_photos_api_rest_client.search_media_items()
@@ -141,7 +141,7 @@ class TestGooglePhotosApiRestClient:
         self, mocker, google_photos_api_rest_client, _json, expected_json
     ):
         mock_get = mocker.patch(
-            "src.rest_client.requests.post",
+            "google_photos_archiver.rest_client.requests.post",
             return_value=MockSuccessResponse(),
         )
         if _json is None:
@@ -162,7 +162,7 @@ class TestGooglePhotosApiRestClient:
 
     def test_search_media_items_failure(self, google_photos_api_rest_client, mocker):
         mock_get = mocker.patch(
-            "src.rest_client.requests.post",
+            "google_photos_archiver.rest_client.requests.post",
             return_value=MockFailureResponse(),
         )
         with pytest.raises(
@@ -185,7 +185,7 @@ class TestGooglePhotosApiRestClient:
         test_video_media_item_dict,
     ):
         mocker.patch(
-            "src.rest_client.requests.post",
+            "google_photos_archiver.rest_client.requests.post",
             side_effect=[
                 MockSuccessResponse(
                     bytes(

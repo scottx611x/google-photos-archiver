@@ -5,12 +5,12 @@ from typing import Generator, List, Optional, Tuple
 
 import click
 
-from src.archivers import DiskArchiver
-from src.filters import Date, DateFilter, DateRange
-from src.media_item import MediaItem
-from src.media_item_archiver import MediaItemArchiver
-from src.media_item_recorder import MediaItemRecorder
-from src.rest_client import GooglePhotosApiRestClient
+from google_photos_archiver.archivers import DiskArchiver
+from google_photos_archiver.filters import Date, DateFilter, DateRange
+from google_photos_archiver.media_item import MediaItem
+from google_photos_archiver.media_item_archiver import MediaItemArchiver
+from google_photos_archiver.media_item_recorder import MediaItemRecorder
+from google_photos_archiver.rest_client import GooglePhotosApiRestClient
 
 
 class Timer:

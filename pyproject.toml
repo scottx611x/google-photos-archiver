@@ -3,6 +3,16 @@ name = "google-photos-archiver"
 version = "0.0.0"
 description = "Archives the contents of your Google Photos library to disk"
 authors = ["Scott Ouellette <scottx611x@gmail.com>"]
+maintainers = ["Scott Ouellette <scottx611x@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/scottx611x/google-photos-archiver"
+keywords = [
+    "Google Photos",
+    "Photo Backup",
+    "Media Arcvhival",
+    "Data Backup"
+]
 exclude = ["tests"]
 
 [tool.poetry.dependencies]
@@ -22,7 +32,7 @@ isort = "^5.6.4"
 pylint = "^2.6.0"
 
 [tool.poetry.scripts]
-google-photos-archiver = 'src.google_photos_archiver:cli'
+google-photos-archiver = 'google_photos_archiver.cli:cli'
 
 [tool.poetry-dynamic-versioning]
 enable = true

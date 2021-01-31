@@ -1,4 +1,4 @@
-from src.media_item import (
+from google_photos_archiver.media_item import (
     MediaItem,
     PhotoMediaMetadata,
     PhotoMetadata,
@@ -93,7 +93,7 @@ class TestMediaItem:
         mock_response_content = bytes("abc123", "utf-8")
 
         mocker.patch(
-            "src.rest_client.requests.get",
+            "google_photos_archiver.rest_client.requests.get",
             return_value=MockSuccessResponse(mock_response_content),
         )
 

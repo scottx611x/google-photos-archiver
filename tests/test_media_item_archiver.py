@@ -3,9 +3,12 @@ from typing import List
 
 import pytest
 
-from src.archivers import DiskArchiver
-from src.media_item import MediaItem
-from src.media_item_archiver import MediaItemArchiver, get_new_media_item_archivals
+from google_photos_archiver.archivers import DiskArchiver
+from google_photos_archiver.media_item import MediaItem
+from google_photos_archiver.media_item_archiver import (
+    MediaItemArchiver,
+    get_new_media_item_archivals,
+)
 from tests.conftest import MockSuccessResponse
 
 TEST_MEDIA_CONTENT = bytes("I'm a test photo or a video!", "utf-8")
@@ -18,7 +21,7 @@ def _test_media_items(
     media_items = [test_photo_media_item, test_video_media_item]
 
     mocker.patch(
-        "src.rest_client.requests.get",
+        "google_photos_archiver.rest_client.requests.get",
         side_effect=[
             MockSuccessResponse(TEST_MEDIA_CONTENT),
             MockSuccessResponse(TEST_MEDIA_CONTENT),

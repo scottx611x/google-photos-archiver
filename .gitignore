@@ -5,3 +5,4 @@ __pycache__
 coverage.xml
 downloaded_media
 media_items.db
+dist

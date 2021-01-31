@@ -2,7 +2,7 @@ from dataclasses import asdict
 
 import pytest
 
-from src.filters import Date, DateFilter, DateRange
+from google_photos_archiver.filters import Date, DateFilter, DateRange
 from tests.conftest import test_date, test_date_filter, test_date_range
 
 

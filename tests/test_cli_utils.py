@@ -3,15 +3,15 @@ from pathlib import Path
 import click
 import pytest
 
-from src.archivers import DiskArchiver
-from src.cli_utils import (
+from google_photos_archiver.archivers import DiskArchiver
+from google_photos_archiver.cli_utils import (
     Timer,
     get_date_objects_from_filters,
     get_media_item_archiver,
     get_media_items,
     validate_dates,
 )
-from src.filters import Date, DateFilter, DateRange
+from google_photos_archiver.filters import Date, DateFilter, DateRange
 from tests.conftest import test_date, test_date_range
 
 

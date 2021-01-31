@@ -1,7 +1,7 @@
 import pytest
 from click.testing import CliRunner
 
-from src.google_photos_archiver import cli
+from google_photos_archiver.cli import cli
 
 
 @pytest.mark.parametrize(
@@ -23,10 +23,10 @@ def test_archive_media_items(
     mocker, google_photos_api_rest_client, options, option_name
 ):
     get_media_item_archiver_mock = mocker.patch(
-        "src.google_photos_archiver.get_media_item_archiver"
+        "google_photos_archiver.cli.get_media_item_archiver"
     )
     get_new_media_item_archivals_mock = mocker.patch(
-        "src.google_photos_archiver.get_new_media_item_archivals"
+        "google_photos_archiver.cli.get_new_media_item_archivals"
     )
 
     max_media_items = 10

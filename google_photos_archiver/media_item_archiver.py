@@ -4,8 +4,8 @@ from concurrent.futures._base import Future
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import Iterable, Iterator
 
-from src.archivers import Archivable
-from src.media_item import MediaItem
+from google_photos_archiver.archivers import Archivable
+from google_photos_archiver.media_item import MediaItem
 
 logger = logging.getLogger(__name__)
 

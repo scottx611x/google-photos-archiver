@@ -6,10 +6,14 @@ import pytest
 from pytest_socket import disable_socket
 from requests import Response
 
-from src.filters import Date, DateFilter, DateRange
-from src.media_item import MediaItem, VideoProcessingStatus, create_media_item
-from src.media_item_recorder import MediaItemRecorder
-from src.rest_client import GooglePhotosApiRestClient
+from google_photos_archiver.filters import Date, DateFilter, DateRange
+from google_photos_archiver.media_item import (
+    MediaItem,
+    VideoProcessingStatus,
+    create_media_item,
+)
+from google_photos_archiver.media_item_recorder import MediaItemRecorder
+from google_photos_archiver.rest_client import GooglePhotosApiRestClient
 
 # pylint: disable=redefined-outer-name
 
@@ -103,7 +107,9 @@ def test_media_item_recorder(tmp_path) -> MediaItemRecorder:
 
 @pytest.fixture()
 def google_photos_api_rest_client(mocker) -> GooglePhotosApiRestClient:
-    mock_oauth_handler = mocker.patch("src.oauth_handler.GoogleOauthHandler")
+    mock_oauth_handler = mocker.patch(
+        "google_photos_archiver.oauth_handler.GoogleOauthHandler"
+    )
     mock_oauth_handler.token = TEST_TOKEN
 
     return GooglePhotosApiRestClient(mock_oauth_handler)

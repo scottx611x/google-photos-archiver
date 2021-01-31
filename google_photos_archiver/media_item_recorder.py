@@ -1,7 +1,7 @@
 import sqlite3
 from pathlib import Path
 
-from src.media_item import MediaItem
+from google_photos_archiver.media_item import MediaItem
 
 
 class MediaItemRecorder:

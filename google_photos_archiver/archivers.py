@@ -1,8 +1,8 @@
 import logging
 from pathlib import Path
 
-from src.media_item import MediaItem
-from src.media_item_recorder import MediaItemRecorder
+from google_photos_archiver.media_item import MediaItem
+from google_photos_archiver.media_item_recorder import MediaItemRecorder
 
 logger = logging.getLogger(__name__)
 
