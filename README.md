@@ -1,17 +1,19 @@
 # google-photos-archiver
 [![CircleCI](https://circleci.com/gh/scottx611x/google-photos-archiver.svg?style=svg&circle-token=54dbe16b5fd34bb8c3a646a479b75f640e1c18b5)](https://circleci.com/gh/scottx611x/google-photos-archiver/tree/main)
 [![codecov](https://codecov.io/gh/scottx611x/google-photos-archiver/branch/main/graph/badge.svg?token=KGmF8LIaY4)](https://codecov.io/gh/scottx611x/google-photos-archiver)
+[![PyPI version](https://badge.fury.io/py/google-photos-archiver.svg)](https://badge.fury.io/py/google-photos-archiver)
 
 * [What?](#what)
 * [Why?](#why)
 * [How?](#how)
-* [Pre\-reqs](#pre-reqs)
-  * [Development Reqs](#development-reqs)
+* [Development Pre\-reqs](#development-pre-reqs)
+  * [Optional Reqs](#optional-reqs)
 * [Getting Started](#getting-started)
   * [Google Oauth Setup](#google-oauth-setup)
   * [First Run](#first-run)
-  * [Usage](#usage)
+  * [Development Usage](#development-usage)
   * [\.\.\. with Docker](#-with-docker)
+  * [General Usage](#general-usage)
   * [Running tests](#running-tests)
 * [Examples](#examples)
   * [Specify a different download location](#specify-a-different-download-location)
@@ -36,7 +38,7 @@ In reality I've mainly just needed a distraction from the vicious cycle of wake,
 
 ## How?
 
-### Pre-reqs
+### Development Pre-reqs
 
 - `docker`
 
@@ -45,7 +47,7 @@ In reality I've mainly just needed a distraction from the vicious cycle of wake,
 - `python==3.8`
 - [poetry](https://python-poetry.org/docs/#installation) `>=1.0.0`
 
-#### Development Reqs
+#### Optional Reqs
 - [pre-commit](https://pre-commit.com/#install)
   - Run `pre-commit install`
 
@@ -70,7 +72,7 @@ These instructions will help you set up Google OAuth2 client credentials so you 
 #### First Run
 A browser window will be opened during the initial OAuth flow. After successfully authenticating once, a refresh token will be stored for future use (See: `--refresh-token-path`) and will omit the need to reauthenticate.
 
-#### Usage
+#### Development Usage
 ```
 $ git clone git@github.com:scottx611x/google-photos-archiver.git
 $ poetry install
@@ -87,6 +89,13 @@ $ docker build . -t google-photos-archiver
 $ docker run -v $PWD:/app/ google-photos-archiver  --help
 ```
 
+#### General Usage
+
+```
+$ pip install google-photos-archiver
+$ google-photos-archiver --help
+```
+
 #### Running tests
 ```
 $ poetry run pytest
@@ -96,13 +105,13 @@ $ poetry run pytest
 
 #### Specify a different download location
 ```
-$ poetry run google-photos-archiver archive-media-items --download-path /Volumes/my-big-hdd/downloaded_media
+$ google-photos-archiver archive-media-items --download-path /Volumes/my-big-hdd/downloaded_media
 ```
 
 #### Download from specific dates (with wildcard support)
 ```
-$ poetry run google-photos-archiver archive-media-items --date-filter 2020/*/*,2021/8/22
-$ poetry run google-photos-archiver archive-media-items --date-range-filter 2019/8/22-2020/8/22
+$ google-photos-archiver archive-media-items --date-filter 2020/*/*,2021/8/22
+$ google-photos-archiver archive-media-items --date-range-filter 2019/8/22-2020/8/22
 ```
 
 #### `--help`
