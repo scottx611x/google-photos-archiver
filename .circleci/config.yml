@@ -51,6 +51,8 @@ jobs:
         steps:
             - checkout
             - run: pip install python-semantic-release
+            - run: git config --global user.email "scottx611x@gmail.com"
+            - run: git config --global user.name "Scott Ouellette"
             - run: semantic-release publish
 
     pypi_publish:
