@@ -42,8 +42,8 @@ jobs:
             - run:
                   name: Docker Build and Run
                   command: |
-                      docker build . -t google-photos-archiver:$CIRCLE_BRANCH
-                      docker run google-photos-archiver:$CIRCLE_BRANCH
+                      docker build . -t google-photos-archiver
+                      docker run google-photos-archiver
 
     gh_release:
         docker:
