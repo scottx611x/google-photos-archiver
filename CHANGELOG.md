@@ -2,26 +2,56 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+v0.1.7 (2021-01-31)
+-------------------
+- Fix(changelog): Get gitchangelog working. [Scott Ouellette]
+- [skip ci] Update CHANGELOG.md. [Scott Ouellette]
+
+
+v0.1.6 (2021-01-31)
+-------------------
 - Fix(typo): Remove comma in pip install. [Scott Ouellette]
 - Fix(ci & docker): Fix old module refs I missed. [Scott Ouellette]
 - Fix(module_naming): Tweak module name to be inline with what poetry
   desires. [Scott Ouellette]
+
+
+v0.1.5 (2021-01-31)
+-------------------
 - Merge branch 'main' of github.com:scottx611x/google-photos-archiver
   into main. [Scott Ouellette]
 - [skip ci] Update CHANGELOG.md. [Scott Ouellette]
 - Fix(ci): try to fix pypi publish. [Scott Ouellette]
+
+
+v0.1.4 (2021-01-31)
+-------------------
 - Fix(exclude_tests): Don't build with tests. [Scott Ouellette]
 - [skip ci] Update CHANGELOG.md. [Scott Ouellette]
+
+
+v0.1.3 (2021-01-31)
+-------------------
 - Fix(release): Trigger semver. [Scott Ouellette]
 - Try to generate changelog and exclude tests from publishing. [Scott
   Ouellette]
 - Try to generate changelog and exclude tests from publishing. [Scott
   Ouellette]
 - [skip ci] Create LICENSE. [Scott Ouellette]
+
+
+v0.1.2 (2021-01-31)
+-------------------
 - Fix(docker_build): Omit CIRCLE_BRANCH as tag. [Scott Ouellette]
+
+
+v0.1.1 (2021-01-31)
+-------------------
 - Fix(release): Still trying to trigger a release. [Scott Ouellette]
+
+
+v0.1.0 (2021-01-31)
+-------------------
 - Fix(release): Still trying to trigger a release. [Scott Ouellette]
 - Fix(release): Still trying to trigger a release. [Scott Ouellette]
 - Fix(version_toml): specify version_toml. [Scott Ouellette]
