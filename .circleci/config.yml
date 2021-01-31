@@ -56,14 +56,18 @@ jobs:
                   command: |
                       git config --global user.email "scottx611x@gmail.com"
                       git config --global user.name "Scott Ouellette"
-            - run: semantic-release version
+            - run:
+                  name: Trigger release
+                  command: |
+                      semantic-release version
+                      git push origin --tags
             - run:
                   name: Update Changelog
                   command: |
                       gitchangelog > CHANGELOG.md
                       git add CHANGELOG.md
                       git commit -m "[skip ci] Update CHANGELOG.md"
-            - run: git push && git push origin --tags
+                      git push
 
     pypi_publish:
         docker:
