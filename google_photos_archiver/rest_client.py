@@ -123,7 +123,7 @@ class GooglePhotosApiRestClient:
                     return
 
     def get_albums(
-        self, page_size: int = 25, page_token: Optional[str] = None
+        self, page_size: int = 50, page_token: Optional[str] = None
     ) -> Response:
         """
         https://developers.google.com/photos/library/reference/rest/v1/albums/list
