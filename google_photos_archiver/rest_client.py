@@ -186,7 +186,7 @@ class GooglePhotosApiRestClient:
 
     def search_media_items(
         self,
-        page_size: int = 25,
+        page_size: int = 100,
         page_token: Optional[str] = None,
         filters: Optional[List[Filter]] = None,
         album_id: Optional[int] = None,
@@ -194,7 +194,9 @@ class GooglePhotosApiRestClient:
         """
         https://developers.google.com/photos/library/reference/rest/v1/mediaItems/search
         """
-        logger.info("Searching for MediaItems")
+        logger.info(
+            "Searching for MediaItems: filters: %s, album_id: %s", filters, album_id
+        )
 
         search_media_items_url: str = urljoin(self.api_url, "mediaItems") + ":search"
 
