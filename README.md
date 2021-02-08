@@ -18,8 +18,7 @@
 * [Examples](#examples)
   * [Specify a different download location](#specify-a-different-download-location)
   * [Download from specific dates (with wildcard support)](#download-from-specific-dates-with-wildcard-support)
-  * [\-\-help](#--help)
-  * [archive\-media\-items \-\-help](#archive-media-items---help)
+  * [Download Albums and their MediaItems only](#download-albums-and-their-mediaitems-only)
   * [Download Path Hierarchy](#download-path-hierarchy)
 
 [comment]: <> (Created with https://github.com/ekalinin/github-markdown-toc.go)
