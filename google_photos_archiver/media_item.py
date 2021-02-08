@@ -1,6 +1,7 @@
 import enum
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
 # Ref: https://developers.google.com/photos/library/guides/access-media-items
@@ -94,6 +95,17 @@ class MediaItem:
         response: requests.Response = requests.get(self.downloadUrl, stream=True)
         response.raise_for_status()
         return response.raw.data
+
+    def get_download_path(self, base_path: Path) -> Path:
+        _media_item_path_prefix = Path(
+            base_path,
+            str(self.creationTime.year),
+            str(self.creationTime.month),
+            str(self.creationTime.day),
+        )
+        _media_item_path_prefix.mkdir(parents=True, exist_ok=True)
+
+        return Path(_media_item_path_prefix, self.filename)
 
 
 def _media_metadata_factory(

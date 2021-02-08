@@ -39,11 +39,10 @@ class TestMediaItemArchiver:
         tmp_path,
     ):
         completed_media_item_archivals = MediaItemArchiver(
-            media_items=_test_media_items,
             archiver=DiskArchiver(
-                download_path=tmp_path, recorder=test_media_item_recorder
+                base_download_path=tmp_path, recorder=test_media_item_recorder
             ),
-        ).start()
+        ).start(_test_media_items)
 
         assert get_new_media_item_archivals(completed_media_item_archivals) == 2
 
@@ -65,9 +64,8 @@ def test_get_new_media_item_archivals(
     tmp_path,
 ):
     completed_media_item_archivals = MediaItemArchiver(
-        media_items=_test_media_items,
         archiver=DiskArchiver(
-            download_path=tmp_path, recorder=test_media_item_recorder
+            base_download_path=tmp_path, recorder=test_media_item_recorder
         ),
-    ).start()
+    ).start(_test_media_items)
     assert get_new_media_item_archivals(completed_media_item_archivals) == 2

@@ -5,6 +5,7 @@ from typing import Generator, List, Optional, Tuple
 
 import click
 
+from google_photos_archiver.album import Album
 from google_photos_archiver.archivers import DiskArchiver
 from google_photos_archiver.filters import Date, DateFilter, DateRange
 from google_photos_archiver.media_item import MediaItem
@@ -117,15 +118,21 @@ def get_date_objects_from_filters(
 
 
 def get_media_items(
-    dates: List[Date],
-    date_ranges: List[DateRange],
     google_photos_api_rest_client: GooglePhotosApiRestClient,
     max_media_items: int,
+    dates: Optional[List[Date]] = None,
+    date_ranges: Optional[List[DateRange]] = None,
+    album: Optional[Album] = None,
 ) -> Generator[MediaItem, None, None]:
     if dates or date_ranges:
         media_items = google_photos_api_rest_client.search_media_items_paginated(
             limit=max_media_items,
             filters=[DateFilter(dates=dates, date_ranges=date_ranges)],
+        )
+    elif album is not None:
+        media_items = google_photos_api_rest_client.search_media_items_paginated(
+            limit=max_media_items,
+            album_id=album.id,
         )
     else:
         media_items = google_photos_api_rest_client.get_media_items_paginated(
@@ -137,14 +144,12 @@ def get_media_items(
 def get_media_item_archiver(
     download_path: str,
     max_threadpool_workers: int,
-    media_items: Generator[MediaItem, None, None],
     sqlite_db_path: str,
 ) -> MediaItemArchiver:
     return MediaItemArchiver(
         archiver=DiskArchiver(
-            download_path=Path(download_path),
+            base_download_path=Path(download_path),
             recorder=MediaItemRecorder(sqlite_db_path=Path(sqlite_db_path)),
         ),
-        media_items=media_items,
         max_threadpool_workers=max_threadpool_workers,
     )

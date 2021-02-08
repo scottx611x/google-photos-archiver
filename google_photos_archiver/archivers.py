@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Optional
 
 from google_photos_archiver.media_item import MediaItem
 from google_photos_archiver.media_item_recorder import MediaItemRecorder
@@ -11,28 +12,28 @@ class Archivable:
     def __init__(self, recorder: MediaItemRecorder):
         self.recorder = recorder
 
-    def archive(self, media_item: MediaItem) -> bool:
+    def archive(self, media_item: MediaItem, album_path: Optional[Path] = None) -> bool:
         raise NotImplementedError(
             f"{self.__class__.__name__} subclasses must implement an archive method"
         )
 
 
 class DiskArchiver(Archivable):
-    def __init__(self, download_path: Path, recorder: MediaItemRecorder):
+    def __init__(self, base_download_path: Path, recorder: MediaItemRecorder):
         super().__init__(recorder)
-        download_path.mkdir(parents=True, exist_ok=True)
-        self.download_path = download_path
+        base_download_path.mkdir(parents=True, exist_ok=True)
+        self.base_download_path = base_download_path
 
-    def archive(self, media_item: MediaItem) -> bool:
-        _media_item_path_prefix = Path(
-            self.download_path,
-            str(media_item.creationTime.year),
-            str(media_item.creationTime.month),
-            str(media_item.creationTime.day),
-        )
-        _media_item_path_prefix.mkdir(parents=True, exist_ok=True)
+    def archive(self, media_item: MediaItem, album_path: Optional[Path] = None) -> bool:
+        media_item_path = media_item.get_download_path(self.base_download_path)
 
-        media_item_path = Path(_media_item_path_prefix, media_item.filename)
+        if album_path is not None:
+            media_item_in_album = Path(album_path, media_item.filename)
+            logger.info("Symlinking %s to %s", media_item_in_album, media_item_path)
+            try:
+                media_item_in_album.symlink_to(media_item_path)
+            except FileExistsError:
+                pass
 
         if media_item_path.exists() and self.recorder.lookup(media_item):
             logger.info(
@@ -55,8 +56,3 @@ class DiskArchiver(Archivable):
         self.recorder.add(media_item)
 
         return True
-
-
-class AWSGlacierArchiver(Archivable):
-    def archive(self, media_item: MediaItem) -> bool:
-        pass

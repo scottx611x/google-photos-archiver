@@ -9,7 +9,10 @@ from google_photos_archiver.cli_utils import (
     get_media_items,
     validate_dates,
 )
-from google_photos_archiver.media_item_archiver import get_new_media_item_archivals
+from google_photos_archiver.media_item_archiver import (
+    MediaItemArchiver,
+    get_new_media_item_archivals,
+)
 from google_photos_archiver.oauth_handler import GoogleOauthHandler
 from google_photos_archiver.rest_client import GooglePhotosApiRestClient
 
@@ -82,9 +85,16 @@ def cli(ctx: click.Context, client_secret_json_path: str, refresh_token_path: st
     help="Up to 5 comma delimited DateRanges conforming"
     " to the YYYY/MM/DD-YYYY/MM/DD (<start_date>-<end_date>) pattern.",
 )
-# pylint: disable=too-many-arguments
+@click.option(
+    "--albums-only",
+    is_flag=True,
+    help="Just target MediaItems that are included in your Albums."
+    " MediaItems will be downloaded per usual and symlinked to from directories with each Album's name",
+)
+# pylint: disable=too-many-arguments,too-many-locals
 def archive_media_items(
     ctx: click.Context,
+    albums_only: bool,
     date_range_filter: str,
     date_filter: str,
     max_media_items: int,
@@ -115,14 +125,41 @@ def archive_media_items(
             fg="green",
         )
 
-        completed_media_item_archivals = get_media_item_archiver(
+        media_item_archiver: MediaItemArchiver = get_media_item_archiver(
             download_path,
             max_threadpool_workers,
-            get_media_items(
-                dates, date_ranges, google_photos_api_rest_client, max_media_items
-            ),
             sqlite_db_path,
-        ).start()
+        )
+
+        completed_media_item_archivals = []
+
+        if albums_only:
+            albums = google_photos_api_rest_client.get_albums_paginated()
+
+            for album in albums:
+                if album.title is None:
+                    album_title = f"Unknown title: Album ID: {album.id}"
+                else:
+                    album_title = album.title
+
+                album_path = Path(download_path, "albums", album_title)
+                album_path.mkdir(parents=True, exist_ok=True)
+
+                media_items = get_media_items(
+                    google_photos_api_rest_client, max_media_items, album=album
+                )
+                completed_media_item_archivals.extend(
+                    media_item_archiver.start(media_items, album_path)
+                )
+
+        else:
+            media_items = get_media_items(
+                google_photos_api_rest_client,
+                max_media_items,
+                dates,
+                date_ranges,
+            )
+            completed_media_item_archivals = media_item_archiver.start(media_items)
 
         new_media_item_archivals = get_new_media_item_archivals(
             completed_media_item_archivals
