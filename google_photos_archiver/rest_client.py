@@ -100,11 +100,9 @@ class GooglePhotosApiRestClient:
         self,
         operation: Callable,
         response_key: PaginationResponseKey,
-        limit: Optional[int] = None,
         page_size: int = 100,
         **kwargs,
     ) -> Generator[Union[Album, MediaItem], None, None]:
-        count = 0
         next_page_token = ""
 
         while next_page_token is not None:
@@ -118,9 +116,6 @@ class GooglePhotosApiRestClient:
 
             for album_or_media_item in response_data.get(response_key.value, []):
                 yield create_album_or_media_item(album_or_media_item)
-                count += 1
-                if count == limit:
-                    return
 
     def get_albums(
         self, page_size: int = 50, page_token: Optional[str] = None
@@ -174,15 +169,9 @@ class GooglePhotosApiRestClient:
         get_media_items_response.raise_for_status()
         return get_media_items_response
 
-    def get_media_items_paginated(
-        self, limit: Optional[int] = None
-    ) -> Generator[MediaItem, None, None]:
-        logger.info(
-            "Fetching %s MediaItems", str(limit) if limit is not None else "all"
-        )
-        return self._paginate(
-            self.get_media_items, PaginationResponseKey.MediaItems, limit
-        )
+    def get_media_items_paginated(self) -> Generator[MediaItem, None, None]:
+        logger.info("Fetching MediaItems")
+        return self._paginate(self.get_media_items, PaginationResponseKey.MediaItems)
 
     def search_media_items(
         self,
@@ -224,7 +213,6 @@ class GooglePhotosApiRestClient:
 
     def search_media_items_paginated(
         self,
-        limit: Optional[int] = None,
         filters: Optional[List[Filter]] = None,
         album_id: Optional[str] = None,
     ) -> Generator[MediaItem, None, None]:
@@ -232,13 +220,11 @@ class GooglePhotosApiRestClient:
             return self._paginate(
                 self.search_media_items,
                 PaginationResponseKey.MediaItems,
-                limit,
                 album_id=album_id,
             )
 
         return self._paginate(
             self.search_media_items,
             PaginationResponseKey.MediaItems,
-            limit,
             filters=filters,
         )

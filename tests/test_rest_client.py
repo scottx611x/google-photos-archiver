@@ -163,7 +163,7 @@ class TestGooglePhotosApiRestClient:
             ],
         )
 
-        media_items = google_photos_api_rest_client.get_media_items_paginated(limit=2)
+        media_items = google_photos_api_rest_client.get_media_items_paginated()
 
         photo_media_item = create_media_item(test_photo_media_item_dict)
         video_media_item = create_media_item(test_video_media_item_dict)
@@ -276,9 +276,7 @@ class TestGooglePhotosApiRestClient:
             ],
         )
 
-        media_items = google_photos_api_rest_client.search_media_items_paginated(
-            limit=2
-        )
+        media_items = google_photos_api_rest_client.search_media_items_paginated()
 
         photo_media_item = create_media_item(test_photo_media_item_dict)
         video_media_item = create_media_item(test_video_media_item_dict)

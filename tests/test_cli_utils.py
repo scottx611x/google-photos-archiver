@@ -96,33 +96,28 @@ def test_get_date_objects_from_filters(date_filter, date_range_filter, expected_
 
 
 @pytest.mark.parametrize(
-    "dates,date_ranges,limit,expected_call,expected_call_args",
+    "dates,date_ranges,expected_call,expected_call_args",
     [
-        ([], [], 10, "get_media_items_paginated", dict(limit=10)),
+        ([], [], "get_media_items_paginated", dict()),
         (
             [test_date()],
             [],
-            10,
             "search_media_items_paginated",
-            dict(limit=10, filters=[DateFilter(dates=[test_date()], date_ranges=[])]),
+            dict(filters=[DateFilter(dates=[test_date()], date_ranges=[])]),
         ),
         (
             [],
             [test_date_range()],
-            10,
             "search_media_items_paginated",
             dict(
-                limit=10,
                 filters=[DateFilter(dates=[], date_ranges=[test_date_range()])],
             ),
         ),
         (
             [test_date()],
             [test_date_range()],
-            10,
             "search_media_items_paginated",
             dict(
-                limit=10,
                 filters=[
                     DateFilter(dates=[test_date()], date_ranges=[test_date_range()])
                 ],
@@ -136,14 +131,12 @@ def test_get_media_items(
     google_photos_api_rest_client,
     dates,
     date_ranges,
-    limit,
     expected_call,
     expected_call_args,
 ):
     mocked_call = mocker.patch.object(google_photos_api_rest_client, expected_call)
     get_media_items(
         google_photos_api_rest_client,
-        limit,
         dates,
         date_ranges,
     )

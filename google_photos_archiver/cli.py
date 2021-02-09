@@ -64,13 +64,6 @@ def cli(ctx: click.Context, client_secret_json_path: str, refresh_token_path: st
     show_default=True,
 )
 @click.option(
-    "--max-media-items",
-    type=int,
-    default=200,
-    help="The maximum amount of MediaItems to account for and archive in a given execution",
-    show_default=True,
-)
-@click.option(
     "--date-filter",
     type=str,
     callback=validate_dates,
@@ -97,7 +90,6 @@ def archive_media_items(
     albums_only: bool,
     date_range_filter: str,
     date_filter: str,
-    max_media_items: int,
     max_threadpool_workers: int,
     download_path: str,
     sqlite_db_path: str,
@@ -116,10 +108,7 @@ def archive_media_items(
             if dates != [] or date_ranges != []
             else ""
         )
-        start_message = (
-            f"Beginning archival of up to {max_media_items} MediaItem(s)"
-            f"{_start_message_innards}"
-        )
+        start_message = f"Beginning archival of MediaItems" f"{_start_message_innards}"
         click.secho(
             start_message,
             fg="green",
@@ -146,7 +135,7 @@ def archive_media_items(
                 album_path.mkdir(parents=True, exist_ok=True)
 
                 media_items = get_media_items(
-                    google_photos_api_rest_client, max_media_items, album=album
+                    google_photos_api_rest_client, album=album
                 )
                 completed_media_item_archivals.extend(
                     media_item_archiver.start(media_items, album_path)
@@ -155,7 +144,6 @@ def archive_media_items(
         else:
             media_items = get_media_items(
                 google_photos_api_rest_client,
-                max_media_items,
                 dates,
                 date_ranges,
             )

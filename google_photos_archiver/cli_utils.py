@@ -119,25 +119,20 @@ def get_date_objects_from_filters(
 
 def get_media_items(
     google_photos_api_rest_client: GooglePhotosApiRestClient,
-    max_media_items: int,
     dates: Optional[List[Date]] = None,
     date_ranges: Optional[List[DateRange]] = None,
     album: Optional[Album] = None,
 ) -> Generator[MediaItem, None, None]:
     if dates or date_ranges:
         media_items = google_photos_api_rest_client.search_media_items_paginated(
-            limit=max_media_items,
             filters=[DateFilter(dates=dates, date_ranges=date_ranges)],
         )
     elif album is not None:
         media_items = google_photos_api_rest_client.search_media_items_paginated(
-            limit=max_media_items,
             album_id=album.id,
         )
     else:
-        media_items = google_photos_api_rest_client.get_media_items_paginated(
-            limit=max_media_items
-        )
+        media_items = google_photos_api_rest_client.get_media_items_paginated()
     return media_items
 
 
