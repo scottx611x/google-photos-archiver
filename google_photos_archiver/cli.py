@@ -132,7 +132,6 @@ def archive_media_items(
                     album_title = album.title
 
                 album_path = Path(download_path, "albums", album_title)
-                album_path.mkdir(parents=True, exist_ok=True)
 
                 media_items = get_media_items(
                     google_photos_api_rest_client, album=album

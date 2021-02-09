@@ -28,6 +28,7 @@ class DiskArchiver(Archivable):
         media_item_path = media_item.get_download_path(self.base_download_path)
 
         if album_path is not None:
+            album_path.mkdir(parents=True, exist_ok=True)
             media_item_in_album = Path(album_path, media_item.filename)
             logger.info("Symlinking %s to %s", media_item_in_album, media_item_path)
             try:
