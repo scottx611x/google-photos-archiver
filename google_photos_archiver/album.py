@@ -51,27 +51,25 @@ def _create_shared_album_options(
 ) -> Optional[SharedAlbumOptions]:
     shared_album_options_dict = share_info_dict.get("sharedAlbumOptions")
 
+    if shared_album_options_dict is None:
+        return shared_album_options_dict
+
     del share_info_dict["sharedAlbumOptions"]
 
-    return (
-        shared_album_options_dict
-        if shared_album_options_dict is None
-        else SharedAlbumOptions(**shared_album_options_dict)
-    )
+    return SharedAlbumOptions(**shared_album_options_dict)
 
 
 def _create_share_info(album_dict: Dict[str, Any]) -> Optional[ShareInfo]:
     share_info_dict = album_dict.get("shareInfo")
 
+    if share_info_dict is None:
+        return share_info_dict
+
     del album_dict["shareInfo"]
 
-    return (
-        share_info_dict
-        if share_info_dict is None
-        else ShareInfo(
-            sharedAlbumOptions=_create_shared_album_options(share_info_dict),
-            **share_info_dict
-        )
+    return ShareInfo(
+        sharedAlbumOptions=_create_shared_album_options(share_info_dict),
+        **share_info_dict
     )
 
 
