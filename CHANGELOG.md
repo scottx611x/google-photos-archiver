@@ -2,19 +2,22 @@ Changelog
 =========
 
 
+(unreleased)
+------------
+- Update gitchangelog to ignore auto-CHANGLOG.md commits. [Scott
+  Ouellette]
+
+
 v0.2.0 (2021-02-09)
 -------------------
 - Feat(--albums-only): Add support for Album archival (#12) [Scott
   Ouellette]
-- [skip ci] Update CHANGELOG.md. [Scott Ouellette]
 - Update README. [Scott Ouellette]
-- [skip ci] Update CHANGELOG.md. [Scott Ouellette]
 
 
 v0.1.7 (2021-01-31)
 -------------------
 - Fix(changelog): Get gitchangelog working. [Scott Ouellette]
-- [skip ci] Update CHANGELOG.md. [Scott Ouellette]
 
 
 v0.1.6 (2021-01-31)
@@ -29,14 +32,12 @@ v0.1.5 (2021-01-31)
 -------------------
 - Merge branch 'main' of github.com:scottx611x/google-photos-archiver
   into main. [Scott Ouellette]
-- [skip ci] Update CHANGELOG.md. [Scott Ouellette]
 - Fix(ci): try to fix pypi publish. [Scott Ouellette]
 
 
 v0.1.4 (2021-01-31)
 -------------------
 - Fix(exclude_tests): Don't build with tests. [Scott Ouellette]
-- [skip ci] Update CHANGELOG.md. [Scott Ouellette]
 
 
 v0.1.3 (2021-01-31)
@@ -46,7 +47,6 @@ v0.1.3 (2021-01-31)
   Ouellette]
 - Try to generate changelog and exclude tests from publishing. [Scott
   Ouellette]
-- [skip ci] Create LICENSE. [Scott Ouellette]
 
 
 v0.1.2 (2021-01-31)
