@@ -127,7 +127,7 @@ def archive_media_items(
 
             for album in albums:
                 if album.title is None:
-                    album_title = f"Unknown title: Album ID: {album.id}"
+                    album_title = f"Album ID: {album.id}"
                 else:
                     album_title = album.title
 
