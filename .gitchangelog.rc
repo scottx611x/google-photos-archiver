@@ -1,1 +1,5 @@
 tag_filter_regexp = r'^v[0-9]+\.[0-9]+(\.[0-9]+)?$'
+ignore_regexps = [
+    r'skip ci',
+    r'^$',  ## ignore commits with empty messages
+]
