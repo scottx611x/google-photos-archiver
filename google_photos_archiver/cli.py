@@ -9,7 +9,10 @@ from google_photos_archiver.cli_utils import (
     get_media_items,
     validate_dates,
 )
-from google_photos_archiver.media_item_archiver import get_new_media_item_archivals
+from google_photos_archiver.media_item_archiver import (
+    MediaItemArchiver,
+    get_new_media_item_archivals,
+)
 from google_photos_archiver.oauth_handler import GoogleOauthHandler
 from google_photos_archiver.rest_client import GooglePhotosApiRestClient
 
@@ -61,13 +64,6 @@ def cli(ctx: click.Context, client_secret_json_path: str, refresh_token_path: st
     show_default=True,
 )
 @click.option(
-    "--max-media-items",
-    type=int,
-    default=200,
-    help="The maximum amount of MediaItems to account for and archive in a given execution",
-    show_default=True,
-)
-@click.option(
     "--date-filter",
     type=str,
     callback=validate_dates,
@@ -82,12 +78,18 @@ def cli(ctx: click.Context, client_secret_json_path: str, refresh_token_path: st
     help="Up to 5 comma delimited DateRanges conforming"
     " to the YYYY/MM/DD-YYYY/MM/DD (<start_date>-<end_date>) pattern.",
 )
-# pylint: disable=too-many-arguments
+@click.option(
+    "--albums-only",
+    is_flag=True,
+    help="Just target MediaItems that are included in your Albums."
+    " MediaItems will be downloaded per usual and symlinked to from directories with each Album's name",
+)
+# pylint: disable=too-many-arguments,too-many-locals
 def archive_media_items(
     ctx: click.Context,
+    albums_only: bool,
     date_range_filter: str,
     date_filter: str,
-    max_media_items: int,
     max_threadpool_workers: int,
     download_path: str,
     sqlite_db_path: str,
@@ -106,23 +108,45 @@ def archive_media_items(
             if dates != [] or date_ranges != []
             else ""
         )
-        start_message = (
-            f"Beginning archival of up to {max_media_items} MediaItem(s)"
-            f"{_start_message_innards}"
-        )
+        start_message = f"Beginning archival of MediaItems" f"{_start_message_innards}"
         click.secho(
             start_message,
             fg="green",
         )
 
-        completed_media_item_archivals = get_media_item_archiver(
+        media_item_archiver: MediaItemArchiver = get_media_item_archiver(
             download_path,
             max_threadpool_workers,
-            get_media_items(
-                dates, date_ranges, google_photos_api_rest_client, max_media_items
-            ),
             sqlite_db_path,
-        ).start()
+        )
+
+        completed_media_item_archivals = []
+
+        if albums_only:
+            albums = google_photos_api_rest_client.get_albums_paginated()
+
+            for album in albums:
+                if album.title is None:
+                    album_title = f"Album ID: {album.id}"
+                else:
+                    album_title = album.title
+
+                album_path = Path(download_path, "albums", album_title)
+
+                media_items = get_media_items(
+                    google_photos_api_rest_client, album=album
+                )
+                completed_media_item_archivals.extend(
+                    media_item_archiver.start(media_items, album_path)
+                )
+
+        else:
+            media_items = get_media_items(
+                google_photos_api_rest_client,
+                dates,
+                date_ranges,
+            )
+            completed_media_item_archivals = media_item_archiver.start(media_items)
 
         new_media_item_archivals = get_new_media_item_archivals(
             completed_media_item_archivals

@@ -96,33 +96,28 @@ def test_get_date_objects_from_filters(date_filter, date_range_filter, expected_
 
 
 @pytest.mark.parametrize(
-    "dates,date_ranges,limit,expected_call,expected_call_args",
+    "dates,date_ranges,expected_call,expected_call_args",
     [
-        ([], [], 10, "get_media_items_paginated", dict(limit=10)),
+        ([], [], "get_media_items_paginated", dict()),
         (
             [test_date()],
             [],
-            10,
             "search_media_items_paginated",
-            dict(limit=10, filters=[DateFilter(dates=[test_date()], date_ranges=[])]),
+            dict(filters=[DateFilter(dates=[test_date()], date_ranges=[])]),
         ),
         (
             [],
             [test_date_range()],
-            10,
             "search_media_items_paginated",
             dict(
-                limit=10,
                 filters=[DateFilter(dates=[], date_ranges=[test_date_range()])],
             ),
         ),
         (
             [test_date()],
             [test_date_range()],
-            10,
             "search_media_items_paginated",
             dict(
-                limit=10,
                 filters=[
                     DateFilter(dates=[test_date()], date_ranges=[test_date_range()])
                 ],
@@ -136,21 +131,19 @@ def test_get_media_items(
     google_photos_api_rest_client,
     dates,
     date_ranges,
-    limit,
     expected_call,
     expected_call_args,
 ):
     mocked_call = mocker.patch.object(google_photos_api_rest_client, expected_call)
-    get_media_items(dates, date_ranges, google_photos_api_rest_client, limit)
+    get_media_items(
+        google_photos_api_rest_client,
+        dates,
+        date_ranges,
+    )
     mocked_call.assert_called_with(**expected_call_args)
 
 
-def test_get_media_item_archiver(
-    tmp_path, test_photo_media_item, test_video_media_item
-):
-    def _media_item_generator():
-        for media_item in [test_photo_media_item, test_video_media_item]:
-            yield media_item
+def test_get_media_item_archiver(tmp_path):
 
     download_path = Path(tmp_path, "download")
     sqlite_db_path = Path(tmp_path, "db.sqlite")
@@ -158,10 +151,9 @@ def test_get_media_item_archiver(
     media_item_archiver = get_media_item_archiver(
         download_path=download_path,
         max_threadpool_workers=max_threadpool_workers,
-        media_items=_media_item_generator(),
         sqlite_db_path=sqlite_db_path,
     )
 
     assert isinstance(media_item_archiver.archiver, DiskArchiver)
-    assert media_item_archiver.archiver.download_path == download_path
+    assert media_item_archiver.archiver.base_download_path == download_path
     assert media_item_archiver.archiver.recorder.sqlite_db_path == sqlite_db_path

@@ -47,47 +47,68 @@ TEST_TOKEN = "TEST_TOKEN"
 
 @pytest.fixture()
 def test_photo_media_item_dict():
-    return {
-        "id": TEST_ID_PHOTO,
-        "productUrl": TEST_URL,
-        "baseUrl": TEST_URL,
-        "mimeType": TEST_PHOTO_MIMETYPE,
-        "filename": TEST_PHOTO_FILENAME,
-        "mediaMetadata": {
-            "creationTime": TEST_CREATION_TIME,
-            "width": TEST_WIDTH,
-            "height": TEST_HEIGHT,
-            "photo": {
-                "cameraMake": TEST_CAMERA_MAKE,
-                "cameraModel": TEST_CAMERA_MODEL,
-                "focalLength": TEST_FOCAL_LENGTH,
-                "apertureFNumber": TEST_APERTURE_F_NUMBER,
-                "isoEquivalent": TEST_ISO_EQUIVALENT,
-            },
-        },
-    }
+    return dict(
+        id=TEST_ID_PHOTO,
+        productUrl=TEST_URL,
+        baseUrl=TEST_URL,
+        mimeType=TEST_PHOTO_MIMETYPE,
+        filename=TEST_PHOTO_FILENAME,
+        mediaMetadata=dict(
+            creationTime=TEST_CREATION_TIME,
+            width=TEST_WIDTH,
+            height=TEST_HEIGHT,
+            photo=dict(
+                cameraMake=TEST_CAMERA_MAKE,
+                cameraModel=TEST_CAMERA_MODEL,
+                focalLength=TEST_FOCAL_LENGTH,
+                apertureFNumber=TEST_APERTURE_F_NUMBER,
+                isoEquivalent=TEST_ISO_EQUIVALENT,
+            ),
+        ),
+    )
 
 
 @pytest.fixture()
 def test_video_media_item_dict():
-    return {
-        "id": TEST_ID_VIDEO,
-        "productUrl": TEST_URL,
-        "baseUrl": TEST_URL,
-        "mimeType": TEST_VIDEO_MIMETYPE,
-        "filename": TEST_VIDEO_FILENAME,
-        "mediaMetadata": {
-            "creationTime": TEST_CREATION_TIME,
-            "width": TEST_WIDTH,
-            "height": TEST_HEIGHT,
-            "video": {
-                "cameraMake": TEST_CAMERA_MAKE,
-                "cameraModel": TEST_CAMERA_MODEL,
-                "fps": TEST_FPS,
-                "status": TEST_VIDEO_PROCESSING_STATUS,
-            },
-        },
-    }
+    return dict(
+        id=TEST_ID_VIDEO,
+        productUrl=TEST_URL,
+        baseUrl=TEST_URL,
+        mimeType=TEST_VIDEO_MIMETYPE,
+        filename=TEST_VIDEO_FILENAME,
+        mediaMetadata=dict(
+            creationTime=TEST_CREATION_TIME,
+            width=TEST_WIDTH,
+            height=TEST_HEIGHT,
+            video=dict(
+                cameraMake=TEST_CAMERA_MAKE,
+                cameraModel=TEST_CAMERA_MODEL,
+                fps=TEST_FPS,
+                status=TEST_VIDEO_PROCESSING_STATUS,
+            ),
+        ),
+    )
+
+
+@pytest.fixture()
+def test_album_dict():
+    return dict(
+        id="123",
+        productUrl="http://www.example.com",
+        mediaItemsCount="12",
+        coverPhotoBaseUrl="http://www.example.com",
+        coverPhotoMediaItemId="abc123",
+        title="Test Album",
+        isWriteable=False,
+        shareInfo=dict(
+            sharedAlbumOptions=dict(isCollaborative=False, isCommentable=True),
+            shareableUrl="http://www.example.com",
+            shareToken="abc123",
+            isJoined=False,
+            isOwned=True,
+            isJoinable=True,
+        ),
+    )
 
 
 @pytest.fixture()

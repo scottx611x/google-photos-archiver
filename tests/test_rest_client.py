@@ -2,12 +2,75 @@ import json
 
 import pytest
 
+from google_photos_archiver.album import create_album
 from google_photos_archiver.media_item import create_media_item
 from google_photos_archiver.rest_client import GooglePhotosApiRestClientError
 from tests.conftest import MockFailureResponse, MockSuccessResponse, test_date_filter
 
 
 class TestGooglePhotosApiRestClient:
+    def test_get_albums_success(self, google_photos_api_rest_client, mocker):
+        mock_get = mocker.patch(
+            "google_photos_archiver.rest_client.requests.get",
+            return_value=MockSuccessResponse(),
+        )
+        get_albums_response = google_photos_api_rest_client.get_albums()
+        assert get_albums_response.ok
+        mock_get.assert_called_with(
+            "https://photoslibrary.googleapis.com/v1/albums",
+            headers={"Authorization": "Bearer TEST_TOKEN"},
+            params={"pageSize": 50},
+        )
+
+    def test_get_albums_failure(self, google_photos_api_rest_client, mocker):
+        mock_get = mocker.patch(
+            "google_photos_archiver.rest_client.requests.get",
+            return_value=MockFailureResponse(),
+        )
+        with pytest.raises(
+            GooglePhotosApiRestClientError, match="Failed to execute: `get_albums`"
+        ):
+            google_photos_api_rest_client.get_albums()
+        mock_get.assert_called_with(
+            "https://photoslibrary.googleapis.com/v1/albums",
+            headers={"Authorization": "Bearer TEST_TOKEN"},
+            params={"pageSize": 50},
+        )
+
+    def test_get_albums_paginated(
+        self, google_photos_api_rest_client, mocker, test_album_dict
+    ):
+        mocker.patch(
+            "google_photos_archiver.rest_client.requests.get",
+            side_effect=[
+                MockSuccessResponse(
+                    bytes(
+                        json.dumps(
+                            {
+                                "albums": [
+                                    test_album_dict,
+                                ],
+                                "nextPageToken": "abc123",
+                            }
+                        ),
+                        "utf-8",
+                    )
+                ),
+                MockSuccessResponse(
+                    bytes(
+                        json.dumps({"albums": [test_album_dict]}),
+                        "utf-8",
+                    )
+                ),
+            ],
+        )
+
+        albums = google_photos_api_rest_client.get_albums_paginated()
+
+        album = create_album(test_album_dict)
+
+        assert list(albums) == [album, album]
+
     def test_get_media_items_success(self, google_photos_api_rest_client, mocker):
         mock_get = mocker.patch(
             "google_photos_archiver.rest_client.requests.get",
@@ -100,7 +163,7 @@ class TestGooglePhotosApiRestClient:
             ],
         )
 
-        media_items = google_photos_api_rest_client.get_media_items_paginated(limit=2)
+        media_items = google_photos_api_rest_client.get_media_items_paginated()
 
         photo_media_item = create_media_item(test_photo_media_item_dict)
         video_media_item = create_media_item(test_video_media_item_dict)
@@ -118,22 +181,26 @@ class TestGooglePhotosApiRestClient:
             "https://photoslibrary.googleapis.com/v1/mediaItems:search",
             headers={"Authorization": "Bearer TEST_TOKEN"},
             params={"alt": "json"},
-            json={"pageSize": 25},
+            json={"pageSize": 100},
         )
 
     @pytest.mark.parametrize(
         "_json,expected_json",
         [
-            (None, dict(pageSize=25)),
+            (None, dict(pageSize=100)),
             (dict(page_size=123), dict(pageSize=123)),
-            (dict(page_token="abc"), dict(pageSize=25, pageToken="abc")),
+            (dict(page_token="abc"), dict(pageSize=100, pageToken="abc")),
             (
                 dict(page_size=123, page_token="abc"),
                 dict(pageSize=123, pageToken="abc"),
             ),
             (
                 dict(filters=[test_date_filter()]),
-                {"pageSize": 25, "filters": test_date_filter().get_filter()},
+                {"pageSize": 100, "filters": test_date_filter().get_filter()},
+            ),
+            (
+                dict(album_id=1),
+                {"pageSize": 100, "albumId": 1},
             ),
         ],
     )
@@ -174,7 +241,7 @@ class TestGooglePhotosApiRestClient:
             "https://photoslibrary.googleapis.com/v1/mediaItems:search",
             headers={"Authorization": "Bearer TEST_TOKEN"},
             params={"alt": "json"},
-            json={"pageSize": 25},
+            json={"pageSize": 100},
         )
 
     def test_search_media_items_paginated(
@@ -209,9 +276,7 @@ class TestGooglePhotosApiRestClient:
             ],
         )
 
-        media_items = google_photos_api_rest_client.search_media_items_paginated(
-            limit=2
-        )
+        media_items = google_photos_api_rest_client.search_media_items_paginated()
 
         photo_media_item = create_media_item(test_photo_media_item_dict)
         video_media_item = create_media_item(test_video_media_item_dict)

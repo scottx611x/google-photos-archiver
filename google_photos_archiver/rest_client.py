@@ -1,10 +1,12 @@
 import logging
-from typing import Any, Callable, Dict, Generator, List, Optional
+from enum import Enum
+from typing import Any, Callable, Dict, Generator, List, Optional, Union
 from urllib.parse import urljoin
 
 import requests
 from requests import Response
 
+from google_photos_archiver.album import Album, create_album
 from google_photos_archiver.filters import Filter
 from google_photos_archiver.media_item import MediaItem, create_media_item
 from google_photos_archiver.oauth_handler import GoogleOauthHandler
@@ -56,6 +58,25 @@ class GooglePhotosApiRestClientError(RuntimeError):
     pass
 
 
+def create_album_or_media_item(
+    album_or_media_item: Dict[str, Any]
+) -> Union[Album, MediaItem]:
+    try:
+        return create_media_item(album_or_media_item)
+    except (KeyError, TypeError):
+        try:
+            return create_album(album_or_media_item)
+        except Exception as err:
+            raise GooglePhotosApiRestClientError(
+                f"Unable to `create_album_or_media_item` from {album_or_media_item}"
+            ) from err
+
+
+class PaginationResponseKey(Enum):
+    Albums = "albums"
+    MediaItems = "mediaItems"
+
+
 @for_all_methods(handle_request_errors)
 class GooglePhotosApiRestClient:
     """
@@ -76,24 +97,54 @@ class GooglePhotosApiRestClient:
         }
 
     def _paginate(
-        self, operation: Callable, limit: Optional[int] = None, **kwargs
-    ) -> Generator[MediaItem, None, None]:
-        count = 0
+        self,
+        operation: Callable,
+        response_key: PaginationResponseKey,
+        page_size: int = 100,
+        **kwargs,
+    ) -> Generator[Union[Album, MediaItem], None, None]:
         next_page_token = ""
 
         while next_page_token is not None:
-            media_items_dict = operation(
-                page_size=100,
+            response: Response = operation(
+                page_size=page_size,
                 page_token=None if next_page_token == "" else next_page_token,
                 **kwargs,
-            ).json()
-            next_page_token = media_items_dict.get("nextPageToken")
+            )
+            response_data = response.json()
+            next_page_token = response_data.get("nextPageToken")
 
-            for media_item in media_items_dict.get("mediaItems", []):
-                yield create_media_item(media_item)
-                count += 1
-                if count == limit:
-                    return
+            for album_or_media_item in response_data.get(response_key.value, []):
+                yield create_album_or_media_item(album_or_media_item)
+
+    def get_albums(
+        self, page_size: int = 50, page_token: Optional[str] = None
+    ) -> Response:
+        """
+        https://developers.google.com/photos/library/reference/rest/v1/albums/list
+        """
+
+        logger.info(
+            "Fetching up to %d Albums with page_token: %s", page_size, page_token
+        )
+
+        albums_url: str = urljoin(self.api_url, "albums")
+
+        get_albums_params: Dict[str, str] = {"pageSize": page_size}
+        if page_token is not None:
+            get_albums_params["pageToken"] = page_token
+
+        get_albums_response: Response = requests.get(
+            albums_url, headers=self._auth_header, params=get_albums_params
+        )
+        get_albums_response.raise_for_status()
+        return get_albums_response
+
+    def get_albums_paginated(self) -> Generator[Album, None, None]:
+        logger.info("Fetching all Albums")
+        return self._paginate(
+            self.get_albums, PaginationResponseKey.Albums, page_size=50
+        )
 
     def get_media_items(
         self, page_size: int = 25, page_token: Optional[str] = None
@@ -102,7 +153,9 @@ class GooglePhotosApiRestClient:
         https://developers.google.com/photos/library/reference/rest/v1/mediaItems/list
         """
 
-        logger.info("Fetching %d MediaItems with page_token: %s", page_size, page_token)
+        logger.info(
+            "Fetching up to %d MediaItems with page_token: %s", page_size, page_token
+        )
 
         media_items_url: str = urljoin(self.api_url, "mediaItems")
 
@@ -116,28 +169,31 @@ class GooglePhotosApiRestClient:
         get_media_items_response.raise_for_status()
         return get_media_items_response
 
-    def get_media_items_paginated(
-        self, limit: Optional[int] = None
-    ) -> Generator[MediaItem, None, None]:
-        logger.info(
-            "Fetching %s MediaItems", str(limit) if limit is not None else "all"
-        )
-        return self._paginate(self.get_media_items, limit)
+    def get_media_items_paginated(self) -> Generator[MediaItem, None, None]:
+        logger.info("Fetching MediaItems")
+        return self._paginate(self.get_media_items, PaginationResponseKey.MediaItems)
 
     def search_media_items(
         self,
-        page_size: int = 25,
+        page_size: int = 100,
         page_token: Optional[str] = None,
         filters: Optional[List[Filter]] = None,
+        album_id: Optional[int] = None,
     ):
         """
         https://developers.google.com/photos/library/reference/rest/v1/mediaItems/search
         """
-        logger.info("Serching for MediaItems")
+        logger.info(
+            "Searching for MediaItems: filters: %s, album_id: %s", filters, album_id
+        )
 
         search_media_items_url: str = urljoin(self.api_url, "mediaItems") + ":search"
 
         search_media_items_body: Dict[str, Any] = {"pageSize": page_size}
+
+        if album_id is not None:
+            search_media_items_body["albumId"] = album_id
+
         if page_token is not None:
             search_media_items_body["pageToken"] = page_token
 
@@ -156,7 +212,19 @@ class GooglePhotosApiRestClient:
         return search_media_items_response
 
     def search_media_items_paginated(
-        self, limit: Optional[int] = None, filters: Optional[List[Filter]] = None
+        self,
+        filters: Optional[List[Filter]] = None,
+        album_id: Optional[str] = None,
     ) -> Generator[MediaItem, None, None]:
+        if album_id is not None:
+            return self._paginate(
+                self.search_media_items,
+                PaginationResponseKey.MediaItems,
+                album_id=album_id,
+            )
 
-        return self._paginate(self.search_media_items, limit, filters=filters)
+        return self._paginate(
+            self.search_media_items,
+            PaginationResponseKey.MediaItems,
+            filters=filters,
+        )

@@ -31,32 +31,34 @@ def _test_media_items(
 
 
 class TestMediaItemArchiver:
-    # pylint: disable=too-many-arguments
+    @pytest.mark.parametrize("has_album_path", [True, False])
     def test_start_with_disk_archiver(
-        self,
-        _test_media_items,
-        test_media_item_recorder,
-        tmp_path,
+        self, _test_media_items, test_media_item_recorder, tmp_path, has_album_path
     ):
+        start_args = [_test_media_items]
+        test_album_path = Path(tmp_path, "test_album")
+
+        if has_album_path:
+            start_args.append(test_album_path)
+
         completed_media_item_archivals = MediaItemArchiver(
-            media_items=_test_media_items,
             archiver=DiskArchiver(
-                download_path=tmp_path, recorder=test_media_item_recorder
+                base_download_path=tmp_path, recorder=test_media_item_recorder
             ),
-        ).start()
+        ).start(*start_args)
 
         assert get_new_media_item_archivals(completed_media_item_archivals) == 2
 
         for media_item in _test_media_items:
             assert test_media_item_recorder.lookup(media_item) is True
-            with Path(
-                tmp_path,
-                str(media_item.creationTime.year),
-                str(media_item.creationTime.month),
-                str(media_item.creationTime.day),
-                media_item.filename,
-            ).open("rb") as f:
+            media_item_path = media_item.get_download_path(tmp_path)
+            with media_item_path.open("rb") as f:
                 assert f.read() == TEST_MEDIA_CONTENT
+
+            if has_album_path:
+                media_item_path_in_album = Path(test_album_path, media_item.filename)
+                assert media_item_path_in_album.is_symlink()
+                assert media_item_path_in_album.resolve() == media_item_path.resolve()
 
 
 def test_get_new_media_item_archivals(
@@ -65,9 +67,8 @@ def test_get_new_media_item_archivals(
     tmp_path,
 ):
     completed_media_item_archivals = MediaItemArchiver(
-        media_items=_test_media_items,
         archiver=DiskArchiver(
-            download_path=tmp_path, recorder=test_media_item_recorder
+            base_download_path=tmp_path, recorder=test_media_item_recorder
         ),
-    ).start()
+    ).start(_test_media_items)
     assert get_new_media_item_archivals(completed_media_item_archivals) == 2

@@ -18,8 +18,7 @@
 * [Examples](#examples)
   * [Specify a different download location](#specify-a-different-download-location)
   * [Download from specific dates (with wildcard support)](#download-from-specific-dates-with-wildcard-support)
-  * [\-\-help](#--help)
-  * [archive\-media\-items \-\-help](#archive-media-items---help)
+  * [Download Albums and their MediaItems only](#download-albums-and-their-mediaitems-only)
   * [Download Path Hierarchy](#download-path-hierarchy)
 
 [comment]: <> (Created with https://github.com/ekalinin/github-markdown-toc.go)
@@ -114,56 +113,15 @@ $ google-photos-archiver archive-media-items --date-filter 2020/*/*,2021/8/22
 $ google-photos-archiver archive-media-items --date-range-filter 2019/8/22-2020/8/22
 ```
 
-#### `--help`
+#### Download Albums and their MediaItems only
 ```
-Usage: google-photos-archiver [OPTIONS] COMMAND [ARGS]...
-
-Options:
-  --client-secret-json-path TEXT  `client_secret.json` file acquired from http
-                                  s://developers.google.com/photos/library/gui
-                                  des/get-started#request-id  [default:
-                                  ./client_secret.json; required]
-
-  --refresh-token-path TEXT       [default: ./refresh_token]
-  --help                          Show this message and exit.
-
-Commands:
-  archive-media-items
-```
-
-#### `archive-media-items --help`
-```
-Usage: google-photos-archiver archive-media-items [OPTIONS]
-
-Options:
-  --download-path TEXT            Directory that MediaItems will be archived
-                                  to  [default: ./downloaded_media]
-
-  --sqlite-db-path TEXT           [default: ./media_items.db]
-  --max-threadpool-workers INTEGER
-                                  The maximum amount of workers to utilize for
-                                  the ThreadPoolExecutor  [default: 100]
-
-  --max-media-items INTEGER       The maximum amount of MediaItems to account
-                                  for and archive in a given execution
-                                  [default: 200]
-
-  --date-filter TEXT              Up to 5 comma delimited Dates conforming to
-                                  the YYYY/MM/DD pattern. Any of YYYY/MM/DD
-                                  can be wildcarded (*) like so:
-                                  */MM/DD,YYYY/*/DD,YYYY/MM/*
-
-  --date-range-filter TEXT        Up to 5 comma delimited DateRanges
-                                  conforming to the YYYY/MM/DD-YYYY/MM/DD
-                                  (<start_date>-<end_date>) pattern.
-
-  --help                          Show this message and exit.
+$ google-photos-archiver archive-media-items --albums-only
 ```
 
 #### Download Path Hierarchy
 ```
 $ tree /<download_path>/downloaded_media/ | head
-/Volumes/2TB/google-photos/scott/downloaded_media/
+/<download_path>/downloaded_media/
 ├── 2021
 │ └── 1
 │     ├── 1
@@ -177,5 +135,8 @@ $ tree /<download_path>/downloaded_media/ | head
 │ └── 2
 │     └── 3
 │         └── d.jpg
+└── albums
+    └── Album A
+        └── <symlink /<download_path>/downloaded_media/2021/1/1/a.jpg >
 ...
 ```
