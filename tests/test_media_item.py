@@ -1,3 +1,5 @@
+import copy
+
 from google_photos_archiver.media_item import (
     MediaItem,
     PhotoMediaMetadata,
@@ -7,70 +9,75 @@ from google_photos_archiver.media_item import (
     VideoProcessingStatus,
     create_media_item,
 )
-from tests.conftest import (
-    TEST_APERTURE_F_NUMBER,
-    TEST_CAMERA_MAKE,
-    TEST_CAMERA_MODEL,
-    TEST_CREATION_TIME,
-    TEST_FOCAL_LENGTH,
-    TEST_FPS,
-    TEST_HEIGHT,
-    TEST_ID_PHOTO,
-    TEST_ID_VIDEO,
-    TEST_ISO_EQUIVALENT,
-    TEST_PHOTO_FILENAME,
-    TEST_PHOTO_MIMETYPE,
-    TEST_URL,
-    TEST_VIDEO_FILENAME,
-    TEST_VIDEO_MIMETYPE,
-    TEST_VIDEO_PROCESSING_STATUS,
-    TEST_WIDTH,
-    MockSuccessResponse,
-)
+from tests.conftest import MockSuccessResponse
 
 
 class TestMediaItem:
     def test_create_photo_media_item(self, test_photo_media_item_dict):
+        test_photo_media_item_dict_copy = copy.deepcopy(test_photo_media_item_dict)
         photo_media_item = create_media_item(test_photo_media_item_dict)
         assert photo_media_item == MediaItem(
-            id=TEST_ID_PHOTO,
-            productUrl=TEST_URL,
-            baseUrl=TEST_URL,
-            mimeType=TEST_PHOTO_MIMETYPE,
+            id=test_photo_media_item_dict_copy["id"],
+            productUrl=test_photo_media_item_dict_copy["productUrl"],
+            baseUrl=test_photo_media_item_dict_copy["baseUrl"],
+            mimeType=test_photo_media_item_dict_copy["mimeType"],
             mediaMetadata=PhotoMediaMetadata(
-                creationTime=TEST_CREATION_TIME,
-                width=TEST_WIDTH,
-                height=TEST_HEIGHT,
+                creationTime=test_photo_media_item_dict_copy["mediaMetadata"][
+                    "creationTime"
+                ],
+                width=test_photo_media_item_dict_copy["mediaMetadata"]["width"],
+                height=test_photo_media_item_dict_copy["mediaMetadata"]["height"],
                 photo=PhotoMetadata(
-                    cameraMake=TEST_CAMERA_MAKE,
-                    cameraModel=TEST_CAMERA_MODEL,
-                    focalLength=TEST_FOCAL_LENGTH,
-                    apertureFNumber=TEST_APERTURE_F_NUMBER,
-                    isoEquivalent=TEST_ISO_EQUIVALENT,
+                    cameraMake=test_photo_media_item_dict_copy["mediaMetadata"][
+                        "photo"
+                    ]["cameraMake"],
+                    cameraModel=test_photo_media_item_dict_copy["mediaMetadata"][
+                        "photo"
+                    ]["cameraModel"],
+                    focalLength=test_photo_media_item_dict_copy["mediaMetadata"][
+                        "photo"
+                    ]["focalLength"],
+                    apertureFNumber=test_photo_media_item_dict_copy["mediaMetadata"][
+                        "photo"
+                    ]["apertureFNumber"],
+                    isoEquivalent=test_photo_media_item_dict_copy["mediaMetadata"][
+                        "photo"
+                    ]["isoEquivalent"],
                 ),
             ),
-            filename=TEST_PHOTO_FILENAME,
+            filename=test_photo_media_item_dict_copy["filename"],
         )
 
     def test_create_video_media_item(self, test_video_media_item_dict):
+        test_video_media_item_dict_copy = copy.deepcopy(test_video_media_item_dict)
         video_media_item = create_media_item(test_video_media_item_dict)
         assert video_media_item == MediaItem(
-            id=TEST_ID_VIDEO,
-            productUrl=TEST_URL,
-            baseUrl=TEST_URL,
-            mimeType=TEST_VIDEO_MIMETYPE,
+            id=test_video_media_item_dict_copy["id"],
+            productUrl=test_video_media_item_dict_copy["productUrl"],
+            baseUrl=test_video_media_item_dict_copy["baseUrl"],
+            mimeType=test_video_media_item_dict_copy["mimeType"],
             mediaMetadata=VideoMediaMetadata(
-                creationTime=TEST_CREATION_TIME,
-                width=TEST_WIDTH,
-                height=TEST_HEIGHT,
+                creationTime=test_video_media_item_dict_copy["mediaMetadata"][
+                    "creationTime"
+                ],
+                width=test_video_media_item_dict_copy["mediaMetadata"]["width"],
+                height=test_video_media_item_dict_copy["mediaMetadata"]["height"],
                 video=VideoMetadata(
-                    cameraMake=TEST_CAMERA_MAKE,
-                    cameraModel=TEST_CAMERA_MODEL,
-                    fps=TEST_FPS,
-                    status=TEST_VIDEO_PROCESSING_STATUS,
+                    cameraMake=test_video_media_item_dict_copy["mediaMetadata"][
+                        "video"
+                    ]["cameraMake"],
+                    cameraModel=test_video_media_item_dict_copy["mediaMetadata"][
+                        "video"
+                    ]["cameraModel"],
+                    fps=test_video_media_item_dict_copy["mediaMetadata"]["video"][
+                        "fps"
+                    ],
+                    status=test_video_media_item_dict_copy["mediaMetadata"]["video"][
+                        "status"
+                    ],
                 ),
             ),
-            filename=TEST_VIDEO_FILENAME,
+            filename=test_video_media_item_dict_copy["filename"],
         )
 
     def test_download_url(self, test_photo_media_item, test_video_media_item):
