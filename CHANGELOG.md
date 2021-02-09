@@ -2,8 +2,11 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+v0.2.0 (2021-02-09)
+-------------------
+- Feat(--albums-only): Add support for Album archival (#12) [Scott
+  Ouellette]
+- [skip ci] Update CHANGELOG.md. [Scott Ouellette]
 - Update README. [Scott Ouellette]
 - [skip ci] Update CHANGELOG.md. [Scott Ouellette]
 
