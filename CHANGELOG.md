@@ -2,8 +2,10 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+v0.2.1 (2021-05-08)
+-------------------
+- Fix(add_retries): Add retry logic to MediaItem.get_raw_data (#13)
+  [Scott Ouellette]
 - Update gitchangelog to ignore auto-CHANGLOG.md commits. [Scott
   Ouellette]
 
