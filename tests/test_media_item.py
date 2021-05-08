@@ -1,5 +1,8 @@
 import copy
 
+import pytest
+import requests
+
 from google_photos_archiver.media_item import (
     MediaItem,
     PhotoMediaMetadata,
@@ -105,3 +108,43 @@ class TestMediaItem:
         )
 
         assert test_photo_media_item.get_raw_data() == mock_response_content
+
+    def test_get_raw_data_retries_on_connection_errors(
+        self, mocker, test_photo_media_item
+    ):
+        mocker.patch("time.sleep")
+        mock_response_content = bytes("abc123", "utf-8")
+        mocker.patch(
+            "google_photos_archiver.rest_client.requests.get",
+            side_effect=[
+                requests.ConnectionError(),
+                requests.ConnectionError(),
+                requests.ConnectionError(),
+                requests.ConnectionError(),
+                MockSuccessResponse(mock_response_content),
+            ],
+        )
+
+        assert test_photo_media_item.get_raw_data() == mock_response_content
+
+    def test_get_raw_data_retries_on_connection_errors_and_fails_after_too_many_attempts(
+        self, mocker, test_photo_media_item
+    ):
+        mocker.patch("time.sleep")
+        mocker.patch(
+            "google_photos_archiver.rest_client.requests.get",
+            side_effect=[
+                requests.ConnectionError(),
+                requests.ConnectionError(),
+                requests.ConnectionError(),
+                requests.ConnectionError(),
+                requests.ConnectionError(),
+                requests.ConnectionError(),
+            ],
+        )
+
+        with pytest.raises(
+            RuntimeError,
+            match=f"Max attempts reached while trying to `get_raw_data` for: {test_photo_media_item.filename}",
+        ):
+            test_photo_media_item.get_raw_data()

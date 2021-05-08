@@ -1,4 +1,6 @@
 import enum
+import logging
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -6,6 +8,8 @@ from typing import Any, Dict, Optional, Union
 
 # Ref: https://developers.google.com/photos/library/guides/access-media-items
 import requests
+
+logger = logging.getLogger(__name__)
 
 # pylint: disable=invalid-name
 
@@ -91,8 +95,29 @@ class MediaItem:
         # PhotoMediaMetadata does not have a processing status
         return True
 
-    def get_raw_data(self) -> bytes:
-        response: requests.Response = requests.get(self.downloadUrl, stream=True)
+    def get_raw_data(self, attempt_number: int = 1) -> bytes:
+        if attempt_number > 5:
+            raise RuntimeError(
+                f"Max attempts reached while trying to `get_raw_data` for: {self.filename}"
+            )
+
+        _wait_time = attempt_number * 5
+
+        try:
+            response: requests.Response = requests.get(self.downloadUrl, stream=True)
+        except requests.ConnectionError:
+            # From time to time I've observed inconsistent ConnectionErrors and I figured
+            # it would be just as easy to retry and hopefully not have to worry about them anymore
+            logger.error(
+                "Failed to fetch data for: %s. Waiting %d"
+                " second(s) and trying again (attempt: %d of 5)",
+                self.filename,
+                _wait_time,
+                attempt_number,
+            )
+            time.sleep(_wait_time)
+            return self.get_raw_data(attempt_number=attempt_number + 1)
+
         response.raise_for_status()
         return response.raw.data
 
